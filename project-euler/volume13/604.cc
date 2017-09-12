@@ -45,6 +45,7 @@ int main() {
   printf("%lld\n", F(11));
   printf("%lld\n", F(100));
   printf("%lld\n", F(50000));
+  printf("%lld\n", F(1000000000));
   printf("%lld\n", F(1000000000000000000ll));
   return 0;
 }
