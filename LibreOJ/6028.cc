@@ -33,11 +33,8 @@ void prime_count(int64 n, int64 mod) {
   std::vector<bool> mark(v + 1);
   for (int it = 0; it < pc && ::p[it] <= v; ++it) {
     int64 p = ::p[it], q = p * p, ed = std::min(v, n / q);
-    for (int64 i = q; i <= v; i += q) {
-      mark[i] = true;
-    }
-    for (int i = 1; i <= ed; ++i) {
-      if (mark[i]) continue;
+    int delta = (p & 1) + 1;
+    for (int i = 1; i <= ed; i += delta) if (!mark[i]) {
       int64 d = i * p;
       if (d <= v) {
         for (int j = 0; j < mod; ++j) {
@@ -49,6 +46,7 @@ void prime_count(int64 n, int64 mod) {
         }
       }
     }
+    for (int64 i = q; i <= ed; i += p * delta) mark[i] = true;
     for (int64 i = v; i >= q; --i) {
       for (int j = 0; j < mod; ++j) {
         ssum[i][p * j % mod] -= ssum[i / p][j] - ssum[p - 1][j];
