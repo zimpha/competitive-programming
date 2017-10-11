@@ -108,19 +108,19 @@ int main() {
       axis[a]++;
     } else {
       std::vector<point> all;
-      std::vector<int128> s(m * 3);
-      for (int i = 0; i < m * 3; ++i) {
+      std::vector<int128> s(m * 2);
+      for (int i = 0; i < m * 2; ++i) {
         s[i] = (hull[i % m] - hull[(i + 1) % m]).norm2();
       }
-      auto u = manacher(s, m * 3);
+      auto u = manacher(s, m * 2);
       for (int i = 0; i < m; ++i) {
         // symmetry axis pass the point
-        if (u[(m + i) * 2 - 1] >= 2 * m) {
+        if (u[i + m + i - 1] >= m) {
           all.push_back(hull[i]);
           all.back().reduce();
         }
         // symmetry axis pass the edge
-        if (u[(m + i) * 2] >= 2 * m - 2) {
+        if (u[i + m + i] >= m - 1) {
           all.push_back(hull[i] + hull[(i + 1) % m]);
           if (all.back().x == 0 && all.back().y == 0) {
             all.back() = {-hull[i].y, hull[i].x};
