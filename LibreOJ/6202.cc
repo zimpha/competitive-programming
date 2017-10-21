@@ -21,11 +21,8 @@ int128 prime_count(int64 n) {
     if (ssum[p] == ssum[p - 1]) continue;
     int128 psum = ssum[p - 1];
     int64 q = p * p, ed = std::min(v, n / q);
-    for (int64 i = q; i <= v; i += q) {
-      mark[i] = true;
-    }
-    for (int i = 1; i <= ed; ++i) {
-      if (mark[i]) continue;
+    int delta = (p & 1) + 1;
+    for (int i = 1; i <= ed; i += delta) if (!mark[i]) {
       int64 d = i * p;
       if (d <= v) {
         lsum[i] -= (lsum[d] - psum) * p;
@@ -33,6 +30,7 @@ int128 prime_count(int64 n) {
         lsum[i] -= (ssum[n / d] - psum) * p;
       }
     }
+    for (int64 i = q; i <= ed; i += p * delta) mark[i] = true;
     for (int64 i = v; i >= q; --i) {
       ssum[i] -= (ssum[i / p] - psum) * p;
     }
