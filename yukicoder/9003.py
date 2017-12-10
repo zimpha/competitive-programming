@@ -1,0 +1,2 @@
+print('decimal')
+print(input())
