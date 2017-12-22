@@ -1,0 +1,5 @@
+N = int(input())
+X = int(input())
+A = int(input())
+B = int(input())
+print(min((X + A - 1) // A, (2 ** (N - 1) - X + B - 1) // B))
