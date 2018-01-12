@@ -71,7 +71,7 @@ int64 sum_sigma_mu(int64 n) {
     size_t ui = std::upper_bound(s.begin(), s.end(), pii(v + 1, 0)) - s.begin();
     for (size_t i = 0; i < ui; ++i) {
       int64 a = s[i].first, b = s[i].second;
-      int64 u = nd / a / a;
+      int64 u = nd / (a * a);
       sum += mu[a] * b * (u <= m ? sigma[u] : sg[nn / u]);
     }
     ret += mu[d] * sum;
