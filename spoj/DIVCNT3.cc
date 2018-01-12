@@ -21,7 +21,7 @@ void prepare(int n) {
     if (!sigma[i]) {
       sigma[i] = e[i] = 2;
       mu[i] = -1;
-      if (i <= n / i) ps[m++] = i;
+      if ((int64)i * i <= n) ps[m++] = i;
     }
     for (int j = 0, u = n / i; j < m && ps[j] <= u; ++j) {
       int p = ps[j], v = p * i;
@@ -45,8 +45,8 @@ void prepare(int n) {
     for (int j = i; j < S; j += i) omega[j]++;
   }
   for (int i = 1; i < S; ++i) if (mu[i]) {
-    for (int j = i; j < S; j += i) if (mu[j]) {
-      int e3 = omega[j / i], e2 = omega[j] - e3;
+    for (int j = i, k = 1; j < S; j += i, ++k) if (mu[j]) {
+      int e3 = omega[k], e2 = omega[j] - e3;
       sqf[i].emplace_back(j, p2[e2] * p3[e3]);
     }
   }
