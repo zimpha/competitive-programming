@@ -3,35 +3,43 @@
 #include <vector>
 #include <algorithm>
 
-using int64 = long long;
-using int128 = __int128;
+using uint32 = unsigned int;
+using uint64 = unsigned long long;
+using uint128 = __uint128_t;
 
 // return the sum of p^k for all p <= m, where m is in form floor(n / i)
 // for m <= sqrt{n}, stored in ssum[m]; for m > sqrt{n} stored in lsum[n / m]
-int128 prime_count(int64 n) {
+uint128 prime_count(uint64 n) {
   if (n < 2) return 0;
-  const int64 v = static_cast<int64>(sqrt(n));
-  std::vector<int128> ssum(v + 1), lsum(v + 1);
+  const uint32 v = static_cast<uint32>(sqrtl(n));
+  std::vector<uint128> ssum(v + 1), lsum(v + 1);
   std::vector<bool> mark(v + 1);
-  for (int i = 1; i <= v; ++i) {
-    ssum[i] = (int128)i * (i + 1) / 2 - 1;
-    lsum[i] = (int128)(n / i) * (n / i + 1) / 2 - 1;
+  for (uint32 i = 1; i <= v; ++i) {
+    ssum[i] = (uint128)i * (i + 1) / 2 - 1;
+    lsum[i] = (uint128)(n / i) * (n / i + 1) / 2 - 1;
   }
-  for (int64 p = 2; p <= v; ++p) {
+  for (uint32 p = 2; p <= v; ++p) {
     if (ssum[p] == ssum[p - 1]) continue;
-    int128 psum = ssum[p - 1];
-    int64 q = p * p, ed = std::min(v, n / q);
+    uint128 psum = ssum[p - 1];
+    uint64 q = (uint64)p * p;
+    uint32 ed = std::min<uint64>(v, n / q);
     int delta = (p & 1) + 1;
-    for (int i = 1; i <= ed; i += delta) if (!mark[i]) {
-      int64 d = i * p;
-      if (d <= v) {
-        lsum[i] -= (lsum[d] - psum) * p;
-      } else {
-        lsum[i] -= (ssum[n / d] - psum) * p;
+    for (uint32 i = 1, w = v / p; i <= w; i += delta) if (!mark[i]) {
+      lsum[i] -= (lsum[i * p] - psum) * p;
+    }
+    if (n / p < std::numeric_limits<uint32>::max()) {
+      uint32 m = n / p;
+      for (uint32 i = v / p + 1; i <= ed; ++i) if (!mark[i]) {
+        lsum[i] -= (ssum[m / i] - psum) * p;
+      }
+    } else {
+      uint64 m = n / p;
+      for (uint32 i = v / p + 1; i <= ed; ++i) if (!mark[i]) {
+        lsum[i] -= (ssum[m / i] - psum) * p;
       }
     }
-    for (int64 i = q; i <= ed; i += p * delta) mark[i] = true;
-    for (int64 i = v; i >= q; --i) {
+    for (uint64 i = q; i <= ed; i += p * delta) mark[i] = true;
+    for (uint32 i = v; i >= q; --i) {
       ssum[i] -= (ssum[i / p] - psum) * p;
     }
   }
@@ -39,11 +47,11 @@ int128 prime_count(int64 n) {
 }
 
 int main() {
-  int64 L, R;
-  scanf("%lld%lld", &L, &R);
-  int128 res = prime_count(R) - prime_count(L - 1);
-  int64 base = 1000000000000000000ll;
-  if (res > base) printf("%lld%018lld\n", int64(res / base), int64(res % base));
-  else printf("%lld\n", (int64)res);
+  uint64 L, R;
+  scanf("%llu%llu", &L, &R);
+  uint128 res = prime_count(R) - prime_count(L - 1);
+  uint64 base = 1000000000000000000ll;
+  if (res > base) printf("%llu%018llu\n", uint64(res / base), uint64(res % base));
+  else printf("%llu\n", (uint64)res);
   return 0;
 }

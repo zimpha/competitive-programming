@@ -3,27 +3,28 @@
 #include <vector>
 #include <algorithm>
 
-using int64 = long long;
+using uint32 = unsigned int;
+using uint64 = unsigned long long;
 
-const int N = 2e5, M = 12;
+constexpr uint32 N = 2e5, M = 12;
 
-int64 ssum[N][M], lsum[N][M];
-int p[N], pc;
+uint64 ssum[N + 1][M], lsum[N + 1][M];
+uint32 ps[N + 1], pcnt;
 
 void sieve() {
-  for (int i = 2; i < N; ++i) {
-    if (!p[i]) p[pc++] = i;
-    for (int j = 0; j < pc && p[j] * i < N; ++j) {
-      p[i * p[j]] = 1;
-      if (i % p[j] == 0) break;
+  for (uint32 i = 2; i <= N; ++i) {
+    if (!ps[i]) ps[pcnt++] = i;
+    for (uint32 j = 0, u = N / i; j < pcnt && ps[j] <= u; ++j) {
+      ps[i * ps[j]] = 1;
+      if (i % ps[j] == 0) break;
     }
   }
 }
 
-void prime_count(int64 n, int64 mod) {
-  const int64 v = static_cast<int64>(sqrt(n));
-  for (int i = 1; i <= v; ++i) {
-    for (int j = 0; j < mod; ++j) {
+void prime_count(uint64 n, uint64 mod) {
+  const uint32 v = static_cast<uint32>(sqrtl(n));
+  for (uint32 i = 1; i <= v; ++i) {
+    for (uint32 j = 0; j < mod; ++j) {
       ssum[i][j] = (i >= j) ? (i - j) / mod + 1 : 0;
       lsum[i][j] = (n / i >= j) ? (n / i - j) / mod + 1 : 0;
     }
@@ -31,37 +32,56 @@ void prime_count(int64 n, int64 mod) {
     --ssum[i][1], --lsum[i][1];
   }
   std::vector<bool> mark(v + 1);
-  for (int it = 0; it < pc && ::p[it] <= v; ++it) {
-    int64 p = ::p[it], q = p * p, ed = std::min(v, n / q);
-    int delta = (p & 1) + 1;
-    for (int i = 1; i <= ed; i += delta) if (!mark[i]) {
-      int64 d = i * p;
-      if (d <= v) {
-        for (int j = 0; j < mod; ++j) {
-          lsum[i][p * j % mod] -= lsum[d][j] - ssum[p - 1][j];
+  for (uint32 it = 0; it < pcnt && ps[it] <= v; ++it) {
+    const uint32 p = ps[it];
+    const uint64 q = (uint64)p * p;
+    const uint32 ed = std::min<uint64>(v, n / q);
+    const uint32 delta = (p & 1) + 1;
+    uint64 *psum = ssum[p - 1];
+    uint32 next[mod] = {};
+    for (uint32 j = 0; j < mod; ++j) {
+      next[j] = p * j % mod;
+    }
+    for (uint32 i = 1, w = v / p; i <= w; i += delta) if (!mark[i]) {
+      uint32 d = i * p;
+      for (uint32 j = 0; j < mod; ++j) {
+        lsum[i][next[j]] -= lsum[d][j] - psum[j];
+      }
+    }
+    if (n / p < std::numeric_limits<uint32>::max()) {
+      uint32 m = n / p;
+      for (uint32 i = v / p + 1; i <= ed; ++i) if (!mark[i]) {
+        uint32 d = m / i;
+        for (uint32 j = 0; j < mod; ++j) {
+          lsum[i][next[j]] -= ssum[d][j] - psum[j];
         }
-      } else {
-        for (int j = 0; j < mod; ++j) {
-          lsum[i][p * j % mod] -= ssum[n / d][j] - ssum[p - 1][j];
+      }
+    } else {
+      uint64 m = n / p;
+      for (uint32 i = v / p + 1; i <= ed; ++i) if (!mark[i]) {
+        uint32 d = m / i;
+        for (uint32 j = 0; j < mod; ++j) {
+          lsum[i][next[j]] -= ssum[d][j] - psum[j];
         }
       }
     }
-    for (int64 i = q; i <= ed; i += p * delta) mark[i] = true;
-    for (int64 i = v; i >= q; --i) {
-      for (int j = 0; j < mod; ++j) {
-        ssum[i][p * j % mod] -= ssum[i / p][j] - ssum[p - 1][j];
+    for (uint64 i = q; i <= ed; i += p * delta) mark[i] = true;
+    for (uint32 i = v; i >= q; --i) {
+      uint32 d = i / p;
+      for (uint32 j = 0; j < mod; ++j) {
+        ssum[i][next[j]] -= ssum[d][j] - psum[j];
       }
     }
   }
-  for (int i = 0; i < mod; ++i) {
-    printf("%lld\n", lsum[1][i]);
+  for (uint32 i = 0; i < mod; ++i) {
+    printf("%llu\n", lsum[1][i]);
   }
 }
 
 int main() {
   sieve();
-  int64 n, m;
-  scanf("%lld%lld", &n, &m);
+  uint64 n, m;
+  scanf("%llu%llu", &n, &m);
   prime_count(n, m);
   return 0;
 }
