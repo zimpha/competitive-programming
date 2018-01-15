@@ -1,29 +1,43 @@
-#include <cassert>
 #include <cmath>
 #include <cstdio>
 #include <stack>
-#include <vector>
 #include <algorithm>
 #include <functional>
 
-using uint64 = unsigned long long;
 using uint32 = unsigned int;
+using uint64 = unsigned long long;
+using uint128 = __uint128_t;
 
-uint64 sum_sigma(uint64 n) {
+const int N = 100000 + 10;
+
+uint64 sigma0[N];
+
+void prepare() {
+  for (int i = 1; i < N; ++i) {
+    for (int j = i; j < N; j += i) {
+      sigma0[j]++;
+    }
+  }
+  for (int i = 1; i < N; ++i) {
+    sigma0[i] += sigma0[i - 1];
+  }
+}
+
+uint128 sum_sigma0(uint64 n) {
   auto out = [n] (uint64 x, uint32 y) {
     return x * y > n;
   };
   auto cut = [n] (uint64 x, uint32 dx, uint32 dy) {
-    return x * x * dy >= n * dx;
+    return uint128(x) * x * dy >= uint128(n) * dx;
   };
   const uint64 sn = sqrtl(n);
-  const uint64 cn = pow(n, 0.36);//cbrtl(n);
+  const uint64 cn = pow(n, 0.34);//cbrtl(n);
   uint64 x = n / sn;
   uint32 y = n / x + 1;
+  uint128 ret = 0;
   std::stack<std::pair<uint32, uint32>> stk;
   stk.emplace(1, 0);
   stk.emplace(1, 1);
-  uint64 ret = 0;
   while (true) {
     uint32 lx, ly;
     std::tie(lx, ly) = stk.top();
@@ -51,40 +65,38 @@ uint64 sum_sigma(uint64 n) {
     }
   }
   for (--y; y > 0; --y) ret += n / y;
-  return ret;
+  return ret * 2 - sn * sn;
 }
 
-uint64 sum_tau3(uint64 n) {
-  uint64 ret = 0, cn = cbrtl(n);
-  for (uint64 i = 1; i <= cn; ++i) {
-    ++ret;
-    uint64 ni = n / i;
-    uint64 uj = sqrt(ni);
-    if (uj <= 1e4) {
-      for (uint64 j = i + 1; j <= uj; ++j) {
-        ret += (ni / j - j) * 6;
-      }
+void print(uint128 n) {
+  static char s[50];
+  static constexpr uint32 base = 1e9;
+  int m = 0;
+  if (!n) s[m++] = '0';
+  while (n) {
+    uint128 q = n / base;
+    uint32 r = n - q * base;
+    if (!q) {
+      while (r) s[m++] = '0' + r % 10, r /= 10;
     } else {
-      ret += 6 * sum_sigma(ni);
-      for (uint64 j = 1; j <= i; ++j) ret -= ni / j * 6;
-      ret -= (uj - i) * (uj + i + 1) * 3;
+      for (int i = 0; i < 9; ++i) s[m++] = '0' + r % 10, r /= 10;
     }
-    ret += (uj - i) * 3;
-    ret += (n / (i * i) - i) * 3;
+    n = q;
   }
-  return ret;
+  s[m] = 0;
+  std::reverse(s, s + m);
+  puts(s);
 }
 
 int main() {
-  std::vector<uint64> tests;
-  for (uint64 n; scanf("%llu", &n) == 1; ) {
-    tests.emplace_back(n);
-  }
-  int cas = 0;
-  for (auto &&n: tests) {
-    uint64 ret = 0;
-    ret = sum_tau3(n);
-    printf("Case %d: %llu\n", ++cas, ret);
+  prepare();
+  int T;
+  scanf("%d", &T);
+  for (int cas = 1; cas <= T; ++cas) {
+    uint64 n;
+    scanf("%llu", &n);
+    uint128 ret = sum_sigma0(n);
+    print(ret);
   }
   return 0;
 }
