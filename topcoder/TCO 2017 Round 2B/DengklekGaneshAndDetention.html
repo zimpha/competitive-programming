@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TopCoder 2017 TCO Algorithm - 1000: DengklekGaneshAndDetention</title>
+    
+    <link type="image/x-icon" rel="shortcut icon" href="http://www.topcoder.com/i/favicon.ico"/>
+    
+
+    
+    <style type="text/css">
+        /* font */
+body {
+    font-family: Helvetica, Arial, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.2em;
+}
+ul.constraints > li:before, ul.notes > li:before {
+    font-family: monospace;
+    font-weight: normal;
+}
+.heading {
+    font-weight: bold;
+    font-size: 175%;
+    line-height: 1.2em;
+}
+.section .section-title {
+    font-weight: bold;
+    font-size: 125%;
+}
+ol.testcases > li:before {
+    font-family: monospace;
+}
+type {
+    font-weight: bold;
+    font-family: monospace;
+}
+li.testcase .data {
+    font-family: monospace;
+    line-height: 1.5em;
+}
+
+/* layout */
+.heading {
+    margin-top: 0.1em;
+    margin-bottom:0.1em;
+    text-align: center;
+}
+.section .section-title {
+    margin-top : 1em;
+    margin-bottom: 1em;
+}
+.problem-intro, note, user-constraint {
+    padding-left: 1.25em;
+}
+
+/* Lists */
+ul.constraints, ul.notes, ul.variables, ul.problem-definition-lines {
+    list-style-type: none;
+    padding: 0px;
+}
+ul.constraints > li:before {
+    content: "-";
+    position:relative;
+    margin-left: 0px; /* optional, for multiline li element */
+    left: 0.625em;
+}
+ul.notes > li:before {
+    content: "-";
+    position:relative;
+    margin-left: 0px; /* optional, for multiline li element */
+    left: 0.625em;
+}
+
+/* Testcases */
+li.testcase {
+    line-height: 1.1em;
+    padding-top: 0.625em;
+    padding-bottom: 0.625em;
+    overflow: auto;
+}
+li.testcase > .testcase-content > div { padding-bottom: 0.5em; padding-left: 1em; }
+
+li.testcase .testcase-comment {
+    margin: 0;
+    padding-left: 1em;
+}
+.testcase-comment p:first-child { margin-top: 0; }
+.testcase-comment p:last-child { margin-bottom: 0; }
+
+li.testcase .testcase-content {
+    margin: 0.31em;
+}
+
+/* Data and variables */
+.testcase-output {
+    padding: 0.2em 1em 0.2em 0em;
+}
+.variables, .testcase-output {
+    margin-left: 0.5em;
+    display: table;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+.variable {
+    display: table-row;
+}
+.variable .name {
+    padding: 0.2em 0em 0.2em 1em;
+    font-weight: bold;
+    display: table-cell;
+    text-align: right;
+}
+.testcase-output .prefix {
+    padding: 0.2em 0em 0.2em 1em;
+    display: table-cell;
+}
+.testcase-output .prefix:after {
+    content : ":";
+    padding-right: 0.5em;
+}
+.variable .name:after {
+    font-weight: bold;
+    content : ":";
+    padding-right: 0.5em;
+}
+.variable .value, .testcase-output .value {
+    padding: 0.2em 1em 0.2em 0em;
+    display: table-cell;
+}
+ol.testcases {
+    padding: 0px;
+    counter-reset: test_number -1;
+}
+ol.testcases > li {
+    list-style:none;
+}
+ol.testcases > li:before {
+    counter-increment:test_number;
+    display: block;
+    clear: both;
+    content:counter(test_number) ")";
+    color: inherit;
+    background: inherit;
+}
+
+/* Problem Definition */
+.problem-definition, .problem-limits {
+    padding-left: 1.25em;
+}
+.problem-definition-lines, .limit-lines {
+    display: table;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 0px;
+}
+.definition-line, .limit-line {
+    display: table-row;
+    height: 1.5em;
+    overflow: auto;
+}
+.limit-name:after {
+    content: ":";
+    margin-right: 1em;
+}
+.definition-name, .definition-value, .limit-name, .limit-value {
+    display: table-cell;
+}
+.definition-value {
+    padding-left: 0.5em;
+}
+.definition-name:after {
+    content: ":";
+}
+#contest-division:before {
+    content: "Div ";
+}
+#problem-score:before {
+    content: "- Problem ";
+}
+#problem-name {
+    display: block;
+}
+
+/* Tags, hidden default */
+.tag {
+    visibility: hidden;
+    position: absolute;
+}
+
+        body {
+    /* font color */
+    color: #333333;
+    /* background color */
+    background-color: white;
+}
+.section .section-title {
+    /* title color */
+    color: black;
+}
+li.testcase .data {
+    /* highlight color */
+    background: #eee;
+}
+
+    </style>
+    
+    
+    
+
+</head>
+
+<body>
+    <h1 class="heading">
+        <span id='contest-name'>2017 TCO Algorithm</span>
+        
+        <span id='problem-score'>1000</span>
+        <span id='problem-name'>DengklekGaneshAndDetention</span>
+    </h1>
+
+    <hr />
+
+    <!-- Problem Statement -->
+    <div class="section">
+        <h2 class="section-title">Problem Statement</h2>
+        <div class="problem-intro">
+            <intro escaped="1">Dengklek and Ganesh often arrive late for school. Feeling irritated, the principal finally decided to give both of them an unusual after-school detention: toggling classroom lamps!
+<br /><br />
+There are <b>N</b> classrooms at the school, conveniently numbered 0 through <b>N</b> &minus; 1. Each classroom has a lamp. The initial state of the lamps is given by an <type>int[]</type> lamps with <b>N</b> elements. The lamp in classroom i is initially on if lamps[i] is 1, otherwise it is initially off. The principal has also secretly prepared a possibly unfair coin in each classroom. You are given an <type>int[]</type> probs with <b>N</b> elements. The coin in classroom i will land heads if flipped with probability probs[i] percent, and will land tails with probability (100 &minus; probs[i]) percent.
+<br /><br />
+Dengklek is told to visit the classrooms in order, from classroom 0 to <b>N</b> &minus; 1. In each classroom i:
+<br />
+<ul>
+<li>If the lamp in the current classroom is off, Dengklek must do nothing.</li>
+<li>Otherwise, Dengklek must flip the coin in the current classroom i:
+<ul>
+<li>If it lands heads up, Dengklek must call Ganesh and ask him to toggle all lamps in classrooms 0 through i &minus; 1, inclusive.</li>
+<li>If it lands tails up, Dengklek must call Ganesh and ask him to toggle all lamps in classrooms i + 1 through N &minus; 1, inclusive.</li>
+</ul>
+</li>
+</ul>
+<br />
+Every time Ganesh toggles a lamp from off to on, Ganesh is told to shout, &quot;We will not come late for school again!&quot;.
+<br /><br />
+The principal is now curious about the expected number of times Ganesh will shout. Return this expected number.
+<br /><br />
+Due to a technical restriction, the <type>int[]</type>s lamps and probs will be generated using a pseudorandom number generator. You are given <type>int</type>s <b>valInit</b>, <b>valMul</b>, <b>valAdd</b>, and <b>valMod</b>. Compute lamps and probs using the following pseudocode:
+<br /><br />
+<pre>
+let val = array of N integers
+val[0] = valInit
+for i in 1 .. N-1:
+    val[i] = (val[i-1] * valMul + valAdd) mod valMod
+
+for i in 0 .. N-1:
+    lamps[i] = val[i] mod 2
+    probs[i] = val[i] mod 101
+</pre></intro>
+        </div>
+    </div>
+    
+    <!-- Problem definition -->
+    
+    <div class="section" id="definition">
+        <h2 class="section-title">Definition</h2>
+        <div class="problem-definition">
+            <ul class="problem-definition-lines">
+                <li class="definition-line" id='class-line'>
+                    <span class='definition-name'>Class</span>
+                    <span class='definition-value'>DengklekGaneshAndDetention</span>
+                </li>
+                <li class="definition-line" id='method-line'>
+                    <span class='definition-name'>Method</span>
+                    <span class='definition-value'>getExpected</span>
+                </li>
+                <li class="definition-line" id='parameters-line'>
+                    <span class='definition-name'>Parameters</span>
+                    <span class='definition-value'>
+                    
+                        int
+                    , 
+                        int
+                    , 
+                        int
+                    , 
+                        int
+                    , 
+                        int
+                    
+                    </span>
+                </li>
+                <li class="definition-line" id='returns-line'>
+                    <span class='definition-name'>Returns</span>
+                    <span class='definition-value'>
+                        double
+                    </span>
+                </li>
+                <li class="definition-line" id='signature-line'>
+                    <span class='definition-name'>Method signature</span>
+                    <span class='definition-value'>
+                        double getExpected(int N, int valInit, int valMul, int valAdd, int valMod)
+                    </span>
+                </li>
+            </ul>
+            <div class="problem-definition-public-tip">(be sure your method is public)</div>
+        </div>        
+    </div>
+    
+
+    <!-- Limits -->
+    <div class="section">
+        <h2 class="section-title">Limits</h2>
+        <div class='problem-limits'>
+            <ul class="limit-lines">
+                <li class='limit-line'>
+                    <span class='limit-name'>Time limit (s)</span>
+                    <span class='limit-value'>2.000</span>
+                </li>
+                <li class='limit-line'>
+                    <span class='limit-name'>Memory limit (MB)</span>
+                    <span class='limit-value'>256</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    
+    <!-- Notes -->
+    <div class="section">
+        <h2 class="section-title">Notes</h2>
+        <ul class="notes">
+        
+            <li><note escaped="1">The returned value must have an absolute or relative error less than 10^-6.</note></li>
+        
+            <li><note escaped="1">The author's solution does not depend on any properties of the pseudorandom number generator.</note></li>
+        
+        </ul>
+    </div>
+    
+    
+    <!-- Constraints -->
+    <div class="section">
+        <h2 class="section-title">Constraints</h2>
+        <ul class="constraints">
+        
+            <li><user-constraint escaped="1"><b>N</b> will be between 1 and 1,000,000, inclusive.</user-constraint></li>
+        
+            <li><user-constraint escaped="1"><b>valMod</b> will be between 1 and 1,000,000,000, inclusive.</user-constraint></li>
+        
+            <li><user-constraint escaped="1"><b>valInit</b> will be between 0 and <b>valMod</b> &minus; 1, inclusive.</user-constraint></li>
+        
+            <li><user-constraint escaped="1"><b>valMul</b> will be between 0 and <b>valMod</b> &minus; 1, inclusive.</user-constraint></li>
+        
+            <li><user-constraint escaped="1"><b>valAdd</b> will be between 0 and <b>valMod</b> &minus; 1, inclusive.</user-constraint></li>
+        
+        </ul>
+    </div>
+
+    <!-- Test cases -->
+    <div class="section">
+        <h2 class="section-title">Test cases</h2>
+        <ol class="testcases" start='0'>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">N</span>
+                                <span class="value data">
+                                
+                                    3
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valInit</span>
+                                <span class="value data">
+                                
+                                    0
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMul</span>
+                                <span class="value data">
+                                
+                                    1
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valAdd</span>
+                                <span class="value data">
+                                
+                                    25
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMod</span>
+                                <span class="value data">
+                                
+                                    100
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            1.375
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">Using the above pseudorandom number generation, we have:
+<br />
+<ul>
+<li>lamps = {0, 1, 0}</li>
+<li>probs = {0, 25, 50}</li>
+</ul>
+<br />
+The following events will happen:
+<br />
+<ul>
+  <li>Dengklek visits classroom 0. The lamp is off, so Dengklek does nothing.</li>
+  <li>Dengklek visits classroom 1. The lamp is on, so Dengklek flips the coin:
+    <ul>
+      <li>With probability 25%, the coin lands heads, and Ganesh first toggles the lamp in classroom 0 and shouts once.
+        <ul>
+          <li>Dengklek visits classroom 2. The lamp is off, so Dengklek does nothing.</li>
+        </ul>
+      </li>
+      <li>With probability 75%, the coin lands tails, and Ganesh toggles the lamp in classroom 2, then shouts once.
+        <ul>
+          <li>Dengklek visits classroom 2. The lamp is on, so Dengklek flips the coin:
+            <ul>
+              <li>With probability 50%, the coin lands heads, and Ganesh toggles the lamps in classrooms 0 and 1, then shouts once.</li>
+            <li>With probability 50%, the coin lands tails.</li>
+            </ul>
+          </li>
+        </ul>
+      </li>
+    </ul>
+  </li>
+</ul>
+
+Therefore, the expected number of shouts is 25% &times; 1 + 75% &times; 50% &times; 2 + 75% &times; 50% &times; 1 = 1.375.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">N</span>
+                                <span class="value data">
+                                
+                                    3
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valInit</span>
+                                <span class="value data">
+                                
+                                    20
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMul</span>
+                                <span class="value data">
+                                
+                                    2
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valAdd</span>
+                                <span class="value data">
+                                
+                                    10
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMod</span>
+                                <span class="value data">
+                                
+                                    57
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            1.06
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">This time, we have:
+<br />
+<ul>
+<li>lamps = {0, 0, 1}</li>
+<li>probs = {20, 50, 53}</li>
+</ul>
+<br />
+Nothing will happen in classrooms 0 and 1. In classroom 2, with probability 53% Ganesh toggles the lamps in classrooms 0 and 1. While he does so, he shouts twice. Therefore, the expected number of shouts is 53% &times; 2 = 1.06.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">N</span>
+                                <span class="value data">
+                                
+                                    8
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valInit</span>
+                                <span class="value data">
+                                
+                                    10
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMul</span>
+                                <span class="value data">
+                                
+                                    3
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valAdd</span>
+                                <span class="value data">
+                                
+                                    10
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMod</span>
+                                <span class="value data">
+                                
+                                    29
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            7.8002283556316
+                        
+                        </span>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">N</span>
+                                <span class="value data">
+                                
+                                    820968
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valInit</span>
+                                <span class="value data">
+                                
+                                    776629771
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMul</span>
+                                <span class="value data">
+                                
+                                    777021349
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valAdd</span>
+                                <span class="value data">
+                                
+                                    200921492
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">valMod</span>
+                                <span class="value data">
+                                
+                                    999997457
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            8.428130292928278E10
+                        
+                        </span>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+        </ol>
+    </div>
+    <hr />
+
+    This problem statement is the exclusive and proprietary property of TopCoder, Inc. Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited. (c)2003, TopCoder, Inc. All rights reserved.
+</body>
+</html>

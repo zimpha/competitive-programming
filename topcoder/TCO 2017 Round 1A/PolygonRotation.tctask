@@ -1,0 +1,77 @@
+15 PolygonRotation
+9 getVolume
+6 double
+2
+5 int[]
+1 x
+5 int[]
+1 y
+4
+0
+2
+int[] 4
+0
+1
+1
+0
+int[] 4
+1
+1
+0
+0
+double 3.141592653589793
+1
+1
+2
+int[] 4
+0
+1
+0
+-1
+int[] 4
+2
+1
+0
+1
+double 2.0943951023931953
+1
+2
+2
+int[] 5
+0
+3
+0
+-2
+-2
+int[] 5
+2
+0
+-3
+-1
+1
+double 49.91641660703782
+1
+3
+2
+int[] 6
+0
+3
+3
+0
+-1
+-1
+int[] 6
+2
+2
+-2
+-2
+-1
+1
+double 113.09733552923257
+1
+10 2017.04.02
+28 2017 TopCoder Open Algorithm
+0
+20 main.PolygonRotation
+0
+4 256M

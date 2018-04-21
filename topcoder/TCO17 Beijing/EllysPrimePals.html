@@ -1,0 +1,547 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TopCoder 2017 TCO Algorithm - 1000: EllysPrimePals</title>
+    
+    <link type="image/x-icon" rel="shortcut icon" href="http://www.topcoder.com/i/favicon.ico"/>
+    
+
+    
+    <style type="text/css">
+        /* font */
+body {
+    font-family: Helvetica, Arial, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.2em;
+}
+ul.constraints > li:before, ul.notes > li:before {
+    font-family: monospace;
+    font-weight: normal;
+}
+.heading {
+    font-weight: bold;
+    font-size: 175%;
+    line-height: 1.2em;
+}
+.section .section-title {
+    font-weight: bold;
+    font-size: 125%;
+}
+ol.testcases > li:before {
+    font-family: monospace;
+}
+type {
+    font-weight: bold;
+    font-family: monospace;
+}
+li.testcase .data {
+    font-family: monospace;
+    line-height: 1.5em;
+}
+
+/* layout */
+.heading {
+    margin-top: 0.1em;
+    margin-bottom:0.1em;
+    text-align: center;
+}
+.section .section-title {
+    margin-top : 1em;
+    margin-bottom: 1em;
+}
+.problem-intro, note, user-constraint {
+    padding-left: 1.25em;
+}
+
+/* Lists */
+ul.constraints, ul.notes, ul.variables, ul.problem-definition-lines {
+    list-style-type: none;
+    padding: 0px;
+}
+ul.constraints > li:before {
+    content: "-";
+    position:relative;
+    margin-left: 0px; /* optional, for multiline li element */
+    left: 0.625em;
+}
+ul.notes > li:before {
+    content: "-";
+    position:relative;
+    margin-left: 0px; /* optional, for multiline li element */
+    left: 0.625em;
+}
+
+/* Testcases */
+li.testcase {
+    line-height: 1.1em;
+    padding-top: 0.625em;
+    padding-bottom: 0.625em;
+    overflow: auto;
+}
+li.testcase > .testcase-content > div { padding-bottom: 0.5em; padding-left: 1em; }
+
+li.testcase .testcase-comment {
+    margin: 0;
+    padding-left: 1em;
+}
+.testcase-comment p:first-child { margin-top: 0; }
+.testcase-comment p:last-child { margin-bottom: 0; }
+
+li.testcase .testcase-content {
+    margin: 0.31em;
+}
+
+/* Data and variables */
+.testcase-output {
+    padding: 0.2em 1em 0.2em 0em;
+}
+.variables, .testcase-output {
+    margin-left: 0.5em;
+    display: table;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+.variable {
+    display: table-row;
+}
+.variable .name {
+    padding: 0.2em 0em 0.2em 1em;
+    font-weight: bold;
+    display: table-cell;
+    text-align: right;
+}
+.testcase-output .prefix {
+    padding: 0.2em 0em 0.2em 1em;
+    display: table-cell;
+}
+.testcase-output .prefix:after {
+    content : ":";
+    padding-right: 0.5em;
+}
+.variable .name:after {
+    font-weight: bold;
+    content : ":";
+    padding-right: 0.5em;
+}
+.variable .value, .testcase-output .value {
+    padding: 0.2em 1em 0.2em 0em;
+    display: table-cell;
+}
+ol.testcases {
+    padding: 0px;
+    counter-reset: test_number -1;
+}
+ol.testcases > li {
+    list-style:none;
+}
+ol.testcases > li:before {
+    counter-increment:test_number;
+    display: block;
+    clear: both;
+    content:counter(test_number) ")";
+    color: inherit;
+    background: inherit;
+}
+
+/* Problem Definition */
+.problem-definition, .problem-limits {
+    padding-left: 1.25em;
+}
+.problem-definition-lines, .limit-lines {
+    display: table;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 0px;
+}
+.definition-line, .limit-line {
+    display: table-row;
+    height: 1.5em;
+    overflow: auto;
+}
+.limit-name:after {
+    content: ":";
+    margin-right: 1em;
+}
+.definition-name, .definition-value, .limit-name, .limit-value {
+    display: table-cell;
+}
+.definition-value {
+    padding-left: 0.5em;
+}
+.definition-name:after {
+    content: ":";
+}
+#contest-division:before {
+    content: "Div ";
+}
+#problem-score:before {
+    content: "- Problem ";
+}
+#problem-name {
+    display: block;
+}
+
+/* Tags, hidden default */
+.tag {
+    visibility: hidden;
+    position: absolute;
+}
+
+        body {
+    /* font color */
+    color: #333333;
+    /* background color */
+    background-color: white;
+}
+.section .section-title {
+    /* title color */
+    color: black;
+}
+li.testcase .data {
+    /* highlight color */
+    background: #eee;
+}
+
+    </style>
+    
+    
+    
+
+</head>
+
+<body>
+    <h1 class="heading">
+        <span id='contest-name'>2017 TCO Algorithm</span>
+        
+        <span id='problem-score'>1000</span>
+        <span id='problem-name'>EllysPrimePals</span>
+    </h1>
+
+    <hr />
+
+    <!-- Problem Statement -->
+    <div class="section">
+        <h2 class="section-title">Problem Statement</h2>
+        <div class="problem-intro">
+            <intro escaped="1">Elly really likes palindromic numbers (e.g. 171 and 4224). She also really likes prime numbers (e.g. 13 and 1,000,000,009). The numbers, which are both prime and palindromic (e.g. 11 and 946,474,649) she simply LOVES!
+<br /><br />
+
+Elly told you that she has found N such numbers A<sub>1</sub>, A<sub>2</sub>, бн, A<sub>N</sub>, with exactly D digits each. In order to keep them secret, she has encoded them in the following way. First, she thinks of a new number X with exactly D digits (which is not necessarily either prime or palindrome), which she calls a &quot;key&quot;. After that, to each digit in each of the numbers A<sub>i</sub>, she adds the corresponding digit in X and records the result modulo 10. This way she obtains a new list of N numbers with exactly D digits each, which, however, are possibly neither prime nor palindromic. Still, if you know the key X, you can easily transform them back into the original palindromic primes.
+<br /><br />
+Note that unnecessary leading zeroes are not allowed anywhere.
+For D &gt; 1 this means that none of the numbers mentioned in the previous paragraph will start with a zero.
+<br /><br />
+For example, suppose the list Elly had contained the numbers (71317, 13331, 96769, 79397, 34543, 73237) and the chosen key X was 42666. Then, the resulting list would be (13973, 55997, 38325, 11953, 76109, 15893).
+<br /><br />
+
+You have found a list of D-digit numbers under Elly's desk. These numbers are given to you in the <type>String[]</type> <b>numbers</b>. Now you wonder whether it may be the mentioned list of encoded palindromic primes. Can you find a key, which Elly could have used? If yes, return it as a string. If several possibilities exist, return the smallest one. If no possible key satisfies the requirements, return &quot;No solution&quot; instead.
+</intro>
+        </div>
+    </div>
+    
+    <!-- Problem definition -->
+    
+    <div class="section" id="definition">
+        <h2 class="section-title">Definition</h2>
+        <div class="problem-definition">
+            <ul class="problem-definition-lines">
+                <li class="definition-line" id='class-line'>
+                    <span class='definition-name'>Class</span>
+                    <span class='definition-value'>EllysPrimePals</span>
+                </li>
+                <li class="definition-line" id='method-line'>
+                    <span class='definition-name'>Method</span>
+                    <span class='definition-value'>getKey</span>
+                </li>
+                <li class="definition-line" id='parameters-line'>
+                    <span class='definition-name'>Parameters</span>
+                    <span class='definition-value'>
+                    
+                        vector&lt;string&gt;
+                    
+                    </span>
+                </li>
+                <li class="definition-line" id='returns-line'>
+                    <span class='definition-name'>Returns</span>
+                    <span class='definition-value'>
+                        string
+                    </span>
+                </li>
+                <li class="definition-line" id='signature-line'>
+                    <span class='definition-name'>Method signature</span>
+                    <span class='definition-value'>
+                        string getKey(vector&lt;string&gt; numbers)
+                    </span>
+                </li>
+            </ul>
+            <div class="problem-definition-public-tip">(be sure your method is public)</div>
+        </div>        
+    </div>
+    
+
+    <!-- Limits -->
+    <div class="section">
+        <h2 class="section-title">Limits</h2>
+        <div class='problem-limits'>
+            <ul class="limit-lines">
+                <li class='limit-line'>
+                    <span class='limit-name'>Time limit (s)</span>
+                    <span class='limit-value'>2.000</span>
+                </li>
+                <li class='limit-line'>
+                    <span class='limit-name'>Memory limit (MB)</span>
+                    <span class='limit-value'>256</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    
+    <!-- Notes -->
+    <div class="section">
+        <h2 class="section-title">Notes</h2>
+        <ul class="notes">
+        
+            <li><note escaped="1">Since we want all the numbers in this problem to have <i>exactly</i> D digits, none of them can have leading zeroes. This includes the prime palindromes, the key, and the encoded numbers.</note></li>
+        
+            <li><note escaped="1">A prime number (or a prime) is a natural number greater than 1 that has no positive divisors other than 1 and itself.</note></li>
+        
+            <li><note escaped="1">A palindromic number is a number that remains the same when when you read it backwards reversed.</note></li>
+        
+        </ul>
+    </div>
+    
+    
+    <!-- Constraints -->
+    <div class="section">
+        <h2 class="section-title">Constraints</h2>
+        <ul class="constraints">
+        
+            <li><user-constraint escaped="1"><b>numbers</b> will contain between 1 and 100 elements, inclusive.</user-constraint></li>
+        
+            <li><user-constraint escaped="1">Each element in <b>numbers</b> will only contain digits ('0'-'9').</user-constraint></li>
+        
+            <li><user-constraint escaped="1">None of the elements of <b>numbers</b> will have leading zeroes.</user-constraint></li>
+        
+            <li><user-constraint escaped="1">All elements of <b>numbers</b> will have the same length D, which will be between 1 and 10 digits, inclusive.</user-constraint></li>
+        
+        </ul>
+    </div>
+
+    <!-- Test cases -->
+    <div class="section">
+        <h2 class="section-title">Test cases</h2>
+        <ol class="testcases" start='0'>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">numbers</span>
+                                <span class="value data">
+                                
+                                    {&quot;13973&quot;,<br />&nbsp;&quot;55997&quot;,<br />&nbsp;&quot;38325&quot;,<br />&nbsp;&quot;11953&quot;,<br />&nbsp;&quot;76109&quot;,<br />&nbsp;&quot;15893&quot;}
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            &quot;42666&quot;
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">The example from the problem statement.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">numbers</span>
+                                <span class="value data">
+                                
+                                    {&quot;173&quot;,<br />&nbsp;&quot;961&quot;,<br />&nbsp;&quot;193&quot;,<br />&nbsp;&quot;739&quot;,<br />&nbsp;&quot;123&quot;}
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            &quot;No solution&quot;
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">Here the key 042 would work, however since we want only numbers with <i>exactly</i> D digits, we consider it invalid.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">numbers</span>
+                                <span class="value data">
+                                
+                                    {&quot;667&quot;,<br />&nbsp;&quot;263&quot;,<br />&nbsp;&quot;203&quot;,<br />&nbsp;&quot;263&quot;,<br />&nbsp;&quot;495&quot;,<br />&nbsp;&quot;677&quot;,<br />&nbsp;&quot;667&quot;,<br />&nbsp;&quot;233&quot;,<br />&nbsp;&quot;859&quot;,<br />&nbsp;&quot;667&quot;,<br />&nbsp;&quot;677&quot;,<br />&nbsp;&quot;233&quot;,<br />&nbsp;&quot;203&quot;,<br />&nbsp;&quot;869&quot;,<br />&nbsp;&quot;405&quot;,<br />&nbsp;&quot;859&quot;,<br />&nbsp;&quot;839&quot;,<br />&nbsp;&quot;405&quot;,<br />&nbsp;&quot;667&quot;,<br />&nbsp;&quot;869&quot;,<br />&nbsp;&quot;405&quot;,<br />&nbsp;&quot;617&quot;,<br />&nbsp;&quot;839&quot;,<br />&nbsp;&quot;263&quot;,<br />&nbsp;&quot;899&quot;,<br />&nbsp;&quot;495&quot;,<br />&nbsp;&quot;263&quot;,<br />&nbsp;&quot;839&quot;,<br />&nbsp;&quot;839&quot;,<br />&nbsp;&quot;263&quot;,<br />&nbsp;&quot;495&quot;,<br />&nbsp;&quot;667&quot;,<br />&nbsp;&quot;263&quot;,<br />&nbsp;&quot;687&quot;,<br />&nbsp;&quot;637&quot;,<br />&nbsp;&quot;859&quot;,<br />&nbsp;&quot;899&quot;,<br />&nbsp;&quot;859&quot;,<br />&nbsp;&quot;203&quot;,<br />&nbsp;&quot;869&quot;,<br />&nbsp;&quot;899&quot;,<br />&nbsp;&quot;617&quot;}
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            &quot;586&quot;
+                        
+                        </span>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">numbers</span>
+                                <span class="value data">
+                                
+                                    {&quot;70450585&quot;,<br />&nbsp;&quot;54404089&quot;,<br />&nbsp;&quot;34381879&quot;,<br />&nbsp;&quot;37184852&quot;,<br />&nbsp;&quot;33404088&quot;,<br />&nbsp;&quot;55595990&quot;,<br />&nbsp;&quot;34593999&quot;,<br />&nbsp;&quot;59239364&quot;,<br />&nbsp;&quot;35956530&quot;,<br />&nbsp;&quot;72248467&quot;,<br />&nbsp;&quot;54552599&quot;,<br />&nbsp;&quot;71087846&quot;,<br />&nbsp;&quot;18169653&quot;,<br />&nbsp;&quot;56904031&quot;,<br />&nbsp;&quot;38376773&quot;,<br />&nbsp;&quot;70335375&quot;,<br />&nbsp;&quot;73594998&quot;,<br />&nbsp;&quot;78953533&quot;,<br />&nbsp;&quot;57751512&quot;,<br />&nbsp;&quot;19367674&quot;,<br />&nbsp;&quot;14296969&quot;,<br />&nbsp;&quot;38069643&quot;,<br />&nbsp;&quot;51196956&quot;,<br />&nbsp;&quot;12800027&quot;,<br />&nbsp;&quot;10723215&quot;,<br />&nbsp;&quot;34160659&quot;,<br />&nbsp;&quot;52863627&quot;,<br />&nbsp;&quot;75511190&quot;,<br />&nbsp;&quot;37681802&quot;,<br />&nbsp;&quot;15455580&quot;,<br />&nbsp;&quot;10524295&quot;,<br />&nbsp;&quot;58853523&quot;,<br />&nbsp;&quot;50491985&quot;,<br />&nbsp;&quot;51930336&quot;,<br />&nbsp;&quot;13669608&quot;,<br />&nbsp;&quot;13217168&quot;,<br />&nbsp;&quot;15377770&quot;,<br />&nbsp;&quot;53490988&quot;,<br />&nbsp;&quot;37078742&quot;,<br />&nbsp;&quot;34480889&quot;,<br />&nbsp;&quot;74713119&quot;,<br />&nbsp;&quot;50818125&quot;,<br />&nbsp;&quot;17641402&quot;,<br />&nbsp;&quot;70435385&quot;,<br />&nbsp;&quot;33391978&quot;,<br />&nbsp;&quot;51698906&quot;,<br />&nbsp;&quot;55123250&quot;,<br />&nbsp;&quot;18738313&quot;,<br />&nbsp;&quot;56396971&quot;,<br />&nbsp;&quot;50754515&quot;,<br />&nbsp;&quot;93376733&quot;,<br />&nbsp;&quot;16190951&quot;,<br />&nbsp;&quot;38098943&quot;,<br />&nbsp;&quot;14174759&quot;,<br />&nbsp;&quot;53083848&quot;,<br />&nbsp;&quot;15816120&quot;,<br />&nbsp;&quot;75862620&quot;,<br />&nbsp;&quot;55575790&quot;,<br />&nbsp;&quot;16817121&quot;,<br />&nbsp;&quot;10161655&quot;,<br />&nbsp;&quot;14173759&quot;,<br />&nbsp;&quot;12143457&quot;,<br />&nbsp;&quot;31007046&quot;,<br />&nbsp;&quot;57346472&quot;,<br />&nbsp;&quot;76649401&quot;,<br />&nbsp;&quot;12713117&quot;,<br />&nbsp;&quot;77265662&quot;,<br />&nbsp;&quot;57158552&quot;,<br />&nbsp;&quot;72466687&quot;,<br />&nbsp;&quot;51759516&quot;,<br />&nbsp;&quot;31893926&quot;,<br />&nbsp;&quot;57523292&quot;,<br />&nbsp;&quot;34706019&quot;,<br />&nbsp;&quot;57173752&quot;,<br />&nbsp;&quot;13702018&quot;,<br />&nbsp;&quot;73396978&quot;,<br />&nbsp;&quot;11203066&quot;,<br />&nbsp;&quot;58426283&quot;,<br />&nbsp;&quot;70114155&quot;,<br />&nbsp;&quot;74032349&quot;,<br />&nbsp;&quot;53277768&quot;,<br />&nbsp;&quot;17303072&quot;,<br />&nbsp;&quot;76548491&quot;,<br />&nbsp;&quot;30978735&quot;,<br />&nbsp;&quot;54744419&quot;,<br />&nbsp;&quot;14440489&quot;,<br />&nbsp;&quot;76496981&quot;,<br />&nbsp;&quot;10869625&quot;,<br />&nbsp;&quot;70558595&quot;,<br />&nbsp;&quot;50147455&quot;,<br />&nbsp;&quot;53663608&quot;,<br />&nbsp;&quot;12483887&quot;,<br />&nbsp;&quot;51517196&quot;,<br />&nbsp;&quot;54804029&quot;,<br />&nbsp;&quot;59438384&quot;,<br />&nbsp;&quot;37311172&quot;,<br />&nbsp;&quot;77931332&quot;,<br />&nbsp;&quot;34250569&quot;,<br />&nbsp;&quot;17093942&quot;,<br />&nbsp;&quot;35252560&quot;}
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            &quot;No solution&quot;
+                        
+                        </span>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">numbers</span>
+                                <span class="value data">
+                                
+                                    {&quot;704505859&quot;,<br />&nbsp;&quot;544040897&quot;,<br />&nbsp;&quot;343818795&quot;,<br />&nbsp;&quot;371848525&quot;,<br />&nbsp;&quot;334040885&quot;,<br />&nbsp;&quot;555959907&quot;,<br />&nbsp;&quot;345939995&quot;,<br />&nbsp;&quot;592393647&quot;,<br />&nbsp;&quot;359565305&quot;,<br />&nbsp;&quot;722484679&quot;,<br />&nbsp;&quot;545525997&quot;,<br />&nbsp;&quot;710878469&quot;,<br />&nbsp;&quot;181696533&quot;,<br />&nbsp;&quot;569040317&quot;,<br />&nbsp;&quot;383767735&quot;,<br />&nbsp;&quot;703353759&quot;,<br />&nbsp;&quot;735949989&quot;,<br />&nbsp;&quot;789535339&quot;,<br />&nbsp;&quot;577515127&quot;,<br />&nbsp;&quot;193676743&quot;,<br />&nbsp;&quot;142969693&quot;,<br />&nbsp;&quot;380696435&quot;,<br />&nbsp;&quot;511969567&quot;,<br />&nbsp;&quot;128000273&quot;,<br />&nbsp;&quot;107232153&quot;,<br />&nbsp;&quot;341606595&quot;,<br />&nbsp;&quot;528636277&quot;,<br />&nbsp;&quot;755111909&quot;,<br />&nbsp;&quot;376818025&quot;,<br />&nbsp;&quot;154555803&quot;,<br />&nbsp;&quot;105242953&quot;,<br />&nbsp;&quot;588535237&quot;,<br />&nbsp;&quot;504919857&quot;,<br />&nbsp;&quot;519303367&quot;,<br />&nbsp;&quot;136696083&quot;,<br />&nbsp;&quot;132171683&quot;,<br />&nbsp;&quot;153777703&quot;,<br />&nbsp;&quot;534909887&quot;,<br />&nbsp;&quot;370787425&quot;,<br />&nbsp;&quot;344808895&quot;,<br />&nbsp;&quot;747131199&quot;,<br />&nbsp;&quot;508181257&quot;,<br />&nbsp;&quot;176414023&quot;,<br />&nbsp;&quot;704353859&quot;,<br />&nbsp;&quot;333919785&quot;,<br />&nbsp;&quot;516989067&quot;,<br />&nbsp;&quot;551232507&quot;,<br />&nbsp;&quot;187383133&quot;,<br />&nbsp;&quot;563969717&quot;,<br />&nbsp;&quot;507545157&quot;,<br />&nbsp;&quot;143595793&quot;,<br />&nbsp;&quot;161909513&quot;,<br />&nbsp;&quot;380989435&quot;,<br />&nbsp;&quot;141747593&quot;,<br />&nbsp;&quot;530838487&quot;,<br />&nbsp;&quot;158161203&quot;,<br />&nbsp;&quot;758626209&quot;,<br />&nbsp;&quot;555757907&quot;,<br />&nbsp;&quot;168171213&quot;,<br />&nbsp;&quot;101616553&quot;,<br />&nbsp;&quot;141737593&quot;,<br />&nbsp;&quot;121434573&quot;,<br />&nbsp;&quot;310070465&quot;,<br />&nbsp;&quot;573464727&quot;,<br />&nbsp;&quot;766494019&quot;,<br />&nbsp;&quot;127131173&quot;,<br />&nbsp;&quot;772656629&quot;,<br />&nbsp;&quot;571585527&quot;,<br />&nbsp;&quot;724666879&quot;,<br />&nbsp;&quot;517595167&quot;,<br />&nbsp;&quot;318939265&quot;,<br />&nbsp;&quot;575232927&quot;,<br />&nbsp;&quot;347060195&quot;,<br />&nbsp;&quot;571737527&quot;,<br />&nbsp;&quot;137020183&quot;,<br />&nbsp;&quot;733969789&quot;,<br />&nbsp;&quot;112030663&quot;,<br />&nbsp;&quot;584262837&quot;,<br />&nbsp;&quot;701141559&quot;,<br />&nbsp;&quot;740323499&quot;,<br />&nbsp;&quot;532777687&quot;,<br />&nbsp;&quot;173030723&quot;,<br />&nbsp;&quot;765484919&quot;,<br />&nbsp;&quot;309787355&quot;,<br />&nbsp;&quot;547444197&quot;,<br />&nbsp;&quot;144404893&quot;,<br />&nbsp;&quot;764969819&quot;,<br />&nbsp;&quot;108696253&quot;,<br />&nbsp;&quot;705585959&quot;,<br />&nbsp;&quot;501474557&quot;,<br />&nbsp;&quot;536636087&quot;,<br />&nbsp;&quot;124838873&quot;,<br />&nbsp;&quot;515171967&quot;,<br />&nbsp;&quot;548040297&quot;,<br />&nbsp;&quot;594383847&quot;,<br />&nbsp;&quot;373111725&quot;,<br />&nbsp;&quot;779313329&quot;,<br />&nbsp;&quot;342505695&quot;,<br />&nbsp;&quot;170939423&quot;,<br />&nbsp;&quot;352525605&quot;}
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            &quot;431434586&quot;
+                        
+                        </span>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">numbers</span>
+                                <span class="value data">
+                                
+                                    { &quot;3&quot; }
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            &quot;0&quot;
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">The number 3 is already a prime palindrome, so the smallest valid key is 0.
+Note that this is allowed: The number 0 is a valid 1-digit number.
+This is because its only digit isn't an <i>unnecessary</i> leading zero.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+        </ol>
+    </div>
+    <hr />
+
+    This problem statement is the exclusive and proprietary property of TopCoder, Inc. Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited. (c)2003, TopCoder, Inc. All rights reserved.
+</body>
+</html>

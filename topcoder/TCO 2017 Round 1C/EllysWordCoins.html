@@ -1,0 +1,651 @@
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>TopCoder TCO 2017 Round 1C - 500: EllysWordCoins</title>
+    
+    <link type="image/x-icon" rel="shortcut icon" href="http://www.topcoder.com/i/favicon.ico"/>
+    
+
+    
+    <style type="text/css">
+        /* font */
+body {
+    font-family: Helvetica, Arial, Verdana, sans-serif;
+    font-size: 16px;
+    line-height: 1.2em;
+}
+ul.constraints > li:before, ul.notes > li:before {
+    font-family: monospace;
+    font-weight: normal;
+}
+.heading {
+    font-weight: bold;
+    font-size: 175%;
+    line-height: 1.2em;
+}
+.section .section-title {
+    font-weight: bold;
+    font-size: 125%;
+}
+ol.testcases > li:before {
+    font-family: monospace;
+}
+type {
+    font-weight: bold;
+    font-family: monospace;
+}
+li.testcase .data {
+    font-family: monospace;
+    line-height: 1.5em;
+}
+
+/* layout */
+.heading {
+    margin-top: 0.1em;
+    margin-bottom:0.1em;
+    text-align: center;
+}
+.section .section-title {
+    margin-top : 1em;
+    margin-bottom: 1em;
+}
+.problem-intro, note, user-constraint {
+    padding-left: 1.25em;
+}
+
+/* Lists */
+ul.constraints, ul.notes, ul.variables, ul.problem-definition-lines {
+    list-style-type: none;
+    padding: 0px;
+}
+ul.constraints > li:before {
+    content: "-";
+    position:relative;
+    margin-left: 0px; /* optional, for multiline li element */
+    left: 0.625em;
+}
+ul.notes > li:before {
+    content: "-";
+    position:relative;
+    margin-left: 0px; /* optional, for multiline li element */
+    left: 0.625em;
+}
+
+/* Testcases */
+li.testcase {
+    line-height: 1.1em;
+    padding-top: 0.625em;
+    padding-bottom: 0.625em;
+    overflow: auto;
+}
+li.testcase > .testcase-content > div { padding-bottom: 0.5em; padding-left: 1em; }
+
+li.testcase .testcase-comment {
+    margin: 0;
+    padding-left: 1em;
+}
+.testcase-comment p:first-child { margin-top: 0; }
+.testcase-comment p:last-child { margin-bottom: 0; }
+
+li.testcase .testcase-content {
+    margin: 0.31em;
+}
+
+/* Data and variables */
+.testcase-output {
+    padding: 0.2em 1em 0.2em 0em;
+}
+.variables, .testcase-output {
+    margin-left: 0.5em;
+    display: table;
+    margin-bottom: 0px;
+    margin-top: 0px;
+}
+.variable {
+    display: table-row;
+}
+.variable .name {
+    padding: 0.2em 0em 0.2em 1em;
+    font-weight: bold;
+    display: table-cell;
+    text-align: right;
+}
+.testcase-output .prefix {
+    padding: 0.2em 0em 0.2em 1em;
+    display: table-cell;
+}
+.testcase-output .prefix:after {
+    content : ":";
+    padding-right: 0.5em;
+}
+.variable .name:after {
+    font-weight: bold;
+    content : ":";
+    padding-right: 0.5em;
+}
+.variable .value, .testcase-output .value {
+    padding: 0.2em 1em 0.2em 0em;
+    display: table-cell;
+}
+ol.testcases {
+    padding: 0px;
+    counter-reset: test_number -1;
+}
+ol.testcases > li {
+    list-style:none;
+}
+ol.testcases > li:before {
+    counter-increment:test_number;
+    display: block;
+    clear: both;
+    content:counter(test_number) ")";
+    color: inherit;
+    background: inherit;
+}
+
+/* Problem Definition */
+.problem-definition, .problem-limits {
+    padding-left: 1.25em;
+}
+.problem-definition-lines, .limit-lines {
+    display: table;
+    margin-top: 0px;
+    margin-bottom: 0px;
+    padding-left: 0px;
+}
+.definition-line, .limit-line {
+    display: table-row;
+    height: 1.5em;
+    overflow: auto;
+}
+.limit-name:after {
+    content: ":";
+    margin-right: 1em;
+}
+.definition-name, .definition-value, .limit-name, .limit-value {
+    display: table-cell;
+}
+.definition-value {
+    padding-left: 0.5em;
+}
+.definition-name:after {
+    content: ":";
+}
+#contest-division:before {
+    content: "Div ";
+}
+#problem-score:before {
+    content: "- Problem ";
+}
+#problem-name {
+    display: block;
+}
+
+/* Tags, hidden default */
+.tag {
+    visibility: hidden;
+    position: absolute;
+}
+
+        body {
+    /* font color */
+    color: #333333;
+    /* background color */
+    background-color: white;
+}
+.section .section-title {
+    /* title color */
+    color: black;
+}
+li.testcase .data {
+    /* highlight color */
+    background: #eee;
+}
+
+    </style>
+    
+    
+    
+
+</head>
+
+<body>
+    <h1 class="heading">
+        <span id='contest-name'>TCO 2017 Round 1C</span>
+        <span id='contest-division'>1</span>
+        <span id='problem-score'>500</span>
+        <span id='problem-name'>EllysWordCoins</span>
+    </h1>
+
+    <hr />
+
+    <!-- Problem Statement -->
+    <div class="section">
+        <h2 class="section-title">Problem Statement</h2>
+        <div class="problem-intro">
+            <intro escaped="1">Elly has already traded BitCoins, LiteCoins, DogeCoins, and many other cryptocurrencies.
+However, now she has invested in a promising new currency: WordCoins.
+In contrast to the other currencies, each WordCoin is actually a nonempty word that consists of uppercase English letters.
+<br /><br />
+
+Each character has a value in dollars: 'A' is worth 1 dollar, 'B' is worth 2 dollars, and so on until 'Z' which is worth 26 dollars.
+There is also a special character '_' (underscore).
+This character does not appear in WordCoins and it is worth 0 dollars.
+<br /><br />
+
+If the owner of a word L wants to trade it for another word R, the following happens:
+<ol>
+<li>If one of the words is shorter than the other, the owner of the shorter word temporarily appends underscores to the end of their word until both words have the same length.</li>
+<li>For each valid index i, they calculate the difference between the value of R[i] and L[i].</li>
+<li>The sum of those differences is the difference between the values of those words. The person with a less valuable word pays the difference (in real dollars) to the other person.</li>
+<li>If any underscores were added in step 1, they are now removed.</li>
+<li>The two people trade their words.</li>
+</ol>
+
+For example, suppose Elly has the WordCoin &quot;ESPRIT&quot; and she wants to trade it for the WordCoin &quot;CGFRVR&quot;.
+The difference between the cost of &quot;CGFRVR&quot; and the cost of &quot;ESPRIT&quot; is (3-5) + (7-19) + (6-16) + (18-18) + (22-9) + (18-20) = -13 dollars.
+This means that &quot;ESPRIT&quot; is more expensive.
+In the trade Elly will give &quot;ESPRIT&quot; to the other person, and the other person will give her &quot;CGFRVR&quot; and 13 dollars.
+<br />
+If you have &quot;DEADBEEF&quot; and you want to trade it for &quot;TOPCODER&quot;, you will have to pay 64 dollars for the trade.
+<br />
+As another example, suppose we have the WordCoin &quot;CODEFORCES&quot; but we want &quot;TOPCODER&quot; instead.
+In this case, we will first pad the second string to get &quot;TOPCODER__&quot;.
+Then we will calculate the price difference between &quot;TOPCODER__&quot; and &quot;CODEFORCES&quot;: (20-3) + ... + (18-3) + (0-5) + (0-19) = 3.
+Note that this means that &quot;TOPCODER&quot; is actually more valuable than &quot;CODEFORCES&quot;: you will have to pay 3 dollars to make the trade.
+<br /><br />
+
+You are given a <type>String[]</type> <b>market</b>.
+Each element of <b>market</b> describes one trade offer on the WordCoin market.
+Each offer has the form &quot;L R&quot;, meaning that if you have the word L, you can trade it to get the word R.
+(Each trade includes the payment of the price difference.)
+<br />
+You are also given two <type>String</type>s: <b>S</b> and <b>G</b>.
+Elly has the string <b>S</b> and she wants to have the string <b>G</b>.
+In order to get the string <b>G</b> she can make any sequence of zero or more consecutive trades.
+Determine the cheapest way of obtaining the WordCoin <b>G</b> and return the total (possibly negative) amount the transactions will cost. It is guaranteed that one can obtain <b>G</b> from <b>S</b> with the given transactions.
+</intro>
+        </div>
+    </div>
+    
+    <!-- Problem definition -->
+    
+    <div class="section" id="definition">
+        <h2 class="section-title">Definition</h2>
+        <div class="problem-definition">
+            <ul class="problem-definition-lines">
+                <li class="definition-line" id='class-line'>
+                    <span class='definition-name'>Class</span>
+                    <span class='definition-value'>EllysWordCoins</span>
+                </li>
+                <li class="definition-line" id='method-line'>
+                    <span class='definition-name'>Method</span>
+                    <span class='definition-value'>getCost</span>
+                </li>
+                <li class="definition-line" id='parameters-line'>
+                    <span class='definition-name'>Parameters</span>
+                    <span class='definition-value'>
+                    
+                        vector&lt;string&gt;
+                    , 
+                        string
+                    , 
+                        string
+                    
+                    </span>
+                </li>
+                <li class="definition-line" id='returns-line'>
+                    <span class='definition-name'>Returns</span>
+                    <span class='definition-value'>
+                        int
+                    </span>
+                </li>
+                <li class="definition-line" id='signature-line'>
+                    <span class='definition-name'>Method signature</span>
+                    <span class='definition-value'>
+                        int getCost(vector&lt;string&gt; market, string S, string G)
+                    </span>
+                </li>
+            </ul>
+            <div class="problem-definition-public-tip">(be sure your method is public)</div>
+        </div>        
+    </div>
+    
+
+    <!-- Limits -->
+    <div class="section">
+        <h2 class="section-title">Limits</h2>
+        <div class='problem-limits'>
+            <ul class="limit-lines">
+                <li class='limit-line'>
+                    <span class='limit-name'>Time limit (s)</span>
+                    <span class='limit-value'>2.000</span>
+                </li>
+                <li class='limit-line'>
+                    <span class='limit-name'>Memory limit (MB)</span>
+                    <span class='limit-value'>256</span>
+                </li>
+            </ul>
+        </div>
+    </div>
+
+    
+    <!-- Notes -->
+    <div class="section">
+        <h2 class="section-title">Notes</h2>
+        <ul class="notes">
+        
+            <li><note escaped="1">Each trade offer in <b>market</b> can be executed at most once.</note></li>
+        
+        </ul>
+    </div>
+    
+    
+    <!-- Constraints -->
+    <div class="section">
+        <h2 class="section-title">Constraints</h2>
+        <ul class="constraints">
+        
+            <li><user-constraint escaped="1"><b>market</b> will contain between 1 and 1000 elements.</user-constraint></li>
+        
+            <li><user-constraint escaped="1">Each element of <b>market</b> will contain between 3 and 41 characters, inclusive.</user-constraint></li>
+        
+            <li><user-constraint escaped="1">Each element of <b>market</b> will be formatted as &quot;W1 W2&quot;, where W1 and W2 are two wordcoins.</user-constraint></li>
+        
+            <li><user-constraint escaped="1">Each wordcoin (including <b>S</b> and <b>G</b>) will contain between 1 and 20 characters, inclusive.</user-constraint></li>
+        
+            <li><user-constraint escaped="1">Each wordcoin (including <b>S</b> and <b>G</b>) will consist entirely of capital letters of the English alphabet ('A'-'Z').</user-constraint></li>
+        
+            <li><user-constraint escaped="1">It is guaranteed that the transactions available in <b>market</b> allow converting <b>S</b> to <b>G</b>.</user-constraint></li>
+        
+        </ul>
+    </div>
+
+    <!-- Test cases -->
+    <div class="section">
+        <h2 class="section-title">Test cases</h2>
+        <ol class="testcases" start='0'>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">market</span>
+                                <span class="value data">
+                                
+                                    { &quot;TOPCODER OPEN&quot;, &quot;SOURCE CODE&quot;, &quot;CHALLENGE POINTS&quot;, &quot;POINTS OPEN&quot;, &quot;QUAL ROUND&quot;, &quot;ROUND CHALLENGE&quot;, &quot;QUAL FUN&quot;, &quot;FUN TOPCODER&quot;, &quot;OPEN FINAL&quot;, &quot;OPEN SOURCE&quot;, &quot;CODE FINAL&quot; }
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">S</span>
+                                <span class="value data">
+                                
+                                    &quot;QUAL&quot;
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">G</span>
+                                <span class="value data">
+                                
+                                    &quot;FINAL&quot;
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            -9
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">An optimal solution: Elly should trade QUAL for FUN (receiving $10), then FUN for TOPCODER (paying
+$55), next she should trade TOPCODER for OPEN (receiving $46), and finally she can exchange
+&quot;OPEN&quot; for &quot;FINAL&quot; (receiving another $8).
+<br />
+The total cost of these trades is (-10) + 55 + (-46) + (-8) = (-9).</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">market</span>
+                                <span class="value data">
+                                
+                                    { &quot;ESPRIT CGFRVR&quot; }
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">S</span>
+                                <span class="value data">
+                                
+                                    &quot;ESPRIT&quot;
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">G</span>
+                                <span class="value data">
+                                
+                                    &quot;CGFRVR&quot;
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            -13
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">One of the examples from the problem statement.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">market</span>
+                                <span class="value data">
+                                
+                                    { &quot;I CODE&quot;, &quot;CODE THEREFORE&quot;, &quot;THEREFORE AM&quot; }
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">S</span>
+                                <span class="value data">
+                                
+                                    &quot;I&quot;
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">G</span>
+                                <span class="value data">
+                                
+                                    &quot;AM&quot;
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            5
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">Not much of a choice here.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">market</span>
+                                <span class="value data">
+                                
+                                    { &quot;MONEY PEARS&quot;, &quot;MONEY APPLES&quot;, &quot;MONEY PLUMS&quot;, &quot;MONEY CHERRIES&quot;, &quot;MONEY STRAWBERRIES&quot;, &quot;MONEY BLUEBERRIES&quot;, &quot;MONEY GRAPES&quot;, &quot;PEARS RAKIQ&quot;, &quot;BRANDY NOMNOMNOM&quot;, &quot;APPLES JUICE&quot;, &quot;JUICE NOMNOMNOM&quot;, &quot;PLUMS RAKIQ&quot;, &quot;JAM NOMNOMNOM&quot;, &quot;CHERRIES JAM&quot;, &quot;STRAWBERRIES JAM&quot;, &quot;BLUEBERRIES JAM&quot;, &quot;GRAPES WINE&quot;, &quot;WINE NOMNOMNOM&quot; }
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">S</span>
+                                <span class="value data">
+                                
+                                    &quot;MONEY&quot;
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">G</span>
+                                <span class="value data">
+                                
+                                    &quot;NOMNOMNOM&quot;
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            54
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">With MONEY we can buy BLUEBERRIES, which we can convert to JAM and finally achieve NOMNOMNOM.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+            <li class="testcase">
+                <div class="testcase-content">
+                    <div class="testcase-input">
+                        <div class='tag'>input</div>
+                        <ul class="variables">
+                        
+                            <li class="variable data">
+                                <span class="name data">market</span>
+                                <span class="value data">
+                                
+                                    { &quot;ONE ONE&quot;, &quot;ONE TWO&quot;, &quot;ONE THREE&quot;, &quot;ONE FOUR&quot;, &quot;ONE FIVE&quot;, &quot;ONE SIX&quot;, &quot;ONE SEVEN&quot;, &quot;ONE EIGHT&quot;, &quot;ONE NINE&quot;, &quot;ONE TEN&quot;, &quot;ONE ELEVEN&quot;, &quot;ONE TWELVE&quot;, &quot;TWO TWO&quot;, &quot;TWO FOUR&quot;, &quot;TWO SIX&quot;, &quot;TWO EIGHT&quot;, &quot;TWO TEN&quot;, &quot;TWO TWELVE&quot;, &quot;THREE THREE&quot;, &quot;THREE SIX&quot;, &quot;THREE NINE&quot;, &quot;THREE TWELVE&quot;, &quot;FOUR FOUR&quot;, &quot;FOUR EIGHT&quot;, &quot;FOUR TWELVE&quot;, &quot;FIVE FIVE&quot;, &quot;FIVE TEN&quot;, &quot;SIX SIX&quot;, &quot;SIX TWELVE&quot; }
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">S</span>
+                                <span class="value data">
+                                
+                                    &quot;ONE&quot;
+                                
+                                </span>
+                            </li>
+                        
+                            <li class="variable data">
+                                <span class="name data">G</span>
+                                <span class="value data">
+                                
+                                    &quot;TWELVE&quot;
+                                
+                                </span>
+                            </li>
+                        
+                        </ul>
+                    </div>
+                    <div class="testcase-output">
+                        <div class='tag'>output</div>
+                        <span class="prefix data">Returns</span>
+                        <span class="value data">
+                        
+                            53
+                        
+                        </span>
+                    </div>
+                    
+                    <div class="testcase-annotation">
+                        <div class='tag'>note</div>
+                        <div class="testcase-comment">There are multiple optimal paths here. One of them is ONE-&gt;TWO-&gt;FOUR-&gt;TWELVE.</div>
+                    </div>
+                    
+               
+                </div>
+            </li>
+            
+        </ol>
+    </div>
+    <hr />
+
+    This problem statement is the exclusive and proprietary property of TopCoder, Inc. Any unauthorized use or reproduction of this information without the prior written consent of TopCoder, Inc. is strictly prohibited. (c)2003, TopCoder, Inc. All rights reserved.
+</body>
+</html>
