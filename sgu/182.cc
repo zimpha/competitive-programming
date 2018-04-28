@@ -87,13 +87,6 @@ int main() {
     return 0;
   }
   ret[n] = 0;
-  for (int mask = 0; mask < 1024; ++mask) {
-    for (int i = 0; i < 10; ++i) {
-      value[i] = mask >> i & 1;
-    }
-    assert(evaluate(ret) == evaluate(s));
-  }
-  assert(n <= 32768);
   puts(ret);
   return 0;
 }
