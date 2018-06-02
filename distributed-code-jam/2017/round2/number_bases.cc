@@ -5,6 +5,7 @@
 #include <vector>
 #include <map>
 #include <set>
+#include <string>
 #include <algorithm>
 
 using ll = long long;
@@ -29,43 +30,97 @@ void put_pii(int, const std::pair<int, int>&);
 std::pair<int, int> get_pii(int);
 
 // Algorithm Begin
-#include "nanobots.h"
+#include "number_bases.h"
 
-const int mod = 1e9 + 7;
+const int N = 1e6 + 10;
 
-int get_range(int c, int n) {
-  int left = 1, right = n;
-  if (Experiment(c, right) == 'T') return n;
-  if (Experiment(c, left) == 'E') return 0;
-  while (left < right) {
-    int mid = (left + right + 1) >> 1;
-    if (Experiment(c, mid) == 'T') left = mid;
-    else right = mid - 1;
+int A[N], B[N], C[N];
+
+bool check(int b, int n, int &carry) {
+  for (int i = 0; i < n; ++i) {
+    if (A[i] >= b || C[i] >= b || B[i] >= b) return false;
+    int x = A[i] + B[i] + carry;
+    if (C[i] != x % b) return false;
+    carry = x / b;
   }
-  return left;
+  return true;
 }
 
 int main() {
   srand(23333);
   int nodes = NumberOfNodes();
   int me = MyNodeId();
-  int n = GetRange();
-  int L = me * n / nodes, R = (me + 1) * n / nodes;
- ll sum = 0;
-  for (int i = L + 1; i <= R; ++i) {
-    sum += get_range(i, n);
-    sum %= mod;
+  int n = GetLength();
+  nodes = (n + N - 1) / N;
+  if (me >= nodes) return 0;
+  int L = me * N, R = std::min(L + N, n);
+  int nn = R - L;
+  int base = -1, invalid = 0;
+  for (int i = L; i < R; ++i) {
+    A[i - L] = GetDigitX(i);
+    B[i - L] = GetDigitY(i);
+    C[i - L] = GetDigitZ(i);
+  }
+  for (int i = 0; i < nn && !invalid && base == -1; ++i) {
+    if (A[i] + B[i] < C[i]) {
+      invalid = 1;
+    } else if (A[i] + B[i] > C[i]) {
+      base = A[i] + B[i] - C[i];
+    }
   }
   if (me) {
-    put_ll(0, sum);
+    put_int(0, base);
+    put_int(0, invalid);
     send(0);
   } else {
     for (int node = 1; node < nodes; ++node) {
       receive(node);
-      sum += get_ll(node);
-      sum %= mod;
+      int t_base = get_int(node);
+      int t_invalid = get_int(node);
+      if (base != -1) continue;
+      if (invalid) continue;
+      invalid |= t_invalid;
+      base = t_base;
     }
-    printf("%lld\n", sum);
+    for (int node = 1; node < nodes; ++node) {
+      put_int(node, base);
+      put_int(node, invalid);
+      send(node);
+    }
+  }
+  if (me) {
+    receive(0);
+    base = get_int(0);
+    invalid = get_int(0);
+  }
+  //printf("%d %d\n", (int)invalid, base);
+  if (invalid) {
+    if (!me) puts("IMPOSSIBLE");
+    return 0;
+  } else if (base == -1) {
+    if (!me) puts("NON-UNIQUE");
+    return 0;
+  }
+  int c0 = 0, c1 = 1;
+  int f0 = check(base, nn, c0);
+  int f1 = check(base, nn, c1);
+  int valid = true;
+  int send = 0;
+  int carry = 0;
+  if (me) {
+    receive(me - 1);
+    carry = get_int(me - 1);
+    valid &= get_int(me - 1);
+  }
+  if (carry) send = c1, valid &= f1;
+  else send = c0, valid &= f0;
+  if (me + 1 != nodes) {
+    put_int(me + 1, send);
+    put_int(me + 1, valid);
+    ::send(me + 1);
+  } else if (me + 1 == nodes) {
+    if (valid && send == 0) printf("%d\n", base);
+    else puts("IMPOSSIBLE");
   }
   return 0;
 }

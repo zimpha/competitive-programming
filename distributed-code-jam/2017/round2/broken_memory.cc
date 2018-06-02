@@ -3,11 +3,14 @@
 #include <cstdlib>
 #include <cstring>
 #include <vector>
+#include <string>
 #include <map>
 #include <set>
 #include <algorithm>
 
 using ll = long long;
+using uint64 = unsigned long long;
+using pll = std::pair<ll, ll>;
 
 void receive(int);
 void send(int);
@@ -29,103 +32,92 @@ void put_pii(int, const std::pair<int, int>&);
 std::pair<int, int> get_pii(int);
 
 // Algorithm Begin
-#include "number_bases.h"
+#include "broken_memory.h"
 
-const int N = 1000000 + 10;
+const int N = 10000000 + 10, M = 1000;
 
-int A[N], B[N], C[N];
-
-bool check(int b, int n, int &carry) {
-  for (int i = 0; i < n; ++i) {
-    if (A[i] >= b || C[i] >= b || B[i] >= b) return false;
-    int x = A[i] + B[i] + carry;
-    if (C[i] != x % b) return false;
-    carry = x / b;
-  }
-  return !carry;
+uint64 hash(uint64 key) {
+  key ^= key >> 33;
+  key *= 0xff51afd7ed558ccd;
+  key ^= key >> 33;
+  key *= 0xc4ceb9fe1a85ec53;
+  key ^= key >> 33;
+  return key;
 }
+
+uint64 val[N];
 
 int main() {
   srand(23333);
   int nodes = NumberOfNodes();
   int me = MyNodeId();
   int n = GetLength();
-  nodes = (n + N - 1) / N;
-  if (me >= nodes) return 0;
-  int L = me * N, R = std::min(L + N, n);
-  int nn = R - L;
-  int find = -1;
-  int flag = 1;
-  int least = 1;
-  for (int i = L; i < R; ++i) {
-    A[i - L] = GetDigitX(i);
-    B[i - L] = GetDigitY(i);
-    C[i - L] = GetDigitZ(i);
+  val[n] = 0;
+  for (int i = n - 1; i >= 0; --i) {
+    val[i] = hash(GetValue(i)) ^ hash(1ll * i * i + i + 1);
+    val[i] += val[i + 1];
   }
-  for (int i = 0; i < nn; ++i) {
-    if (A[i] + B[i] == C[i]) {
-      least = std::max(least, C[i] + 1);
-    } else if (A[i] + B[i] > C[i]) {
-      int base = A[i] + B[i] - C[i];
-      find = base;
-      break;
-    } else {
-      flag = 0;
-      break;
-    }
+  /*
+  printf("%d: ", me);
+  for (int i = 0; i <= n; ++i) printf("%lld ", (ll)val[i]);
+  puts("");
+  */
+  auto compute = [&] (int mid) {
+    return pll(val[0] - val[mid + 1], val[mid + 1] - val[n]);
+  };
+  auto left_or_right = [&] (pll a, pll b, pll c) {
+    if (a.second == b.second || a.second == c.second) return true;
+    if (a.first == b.first || a.first == c.first) return false;
+    return b.first == c.first;
+  };
+
+  int left = 0, right = n - 1;
+  for (int it = 0; it < 30; ++it) {
+    int mid = (left + right - 1) >> 1;
+    if (left == right) mid = left;
+    pll my_value = compute(mid);
+    // send query to [me + 1, me + 2]
+    put_int((me + 1) % nodes, mid);
+    send((me + 1) % nodes);
+    put_int((me + 2) % nodes, mid);
+    send((me + 2) % nodes);
+    // recieve from query [me - 1, me - 2]
+    receive((me - 1 + nodes) % nodes);
+    pll to_send1 = compute(get_int((me - 1 + nodes) % nodes));
+    receive((me - 2 + nodes) % nodes);
+    pll to_send2 = compute(get_int((me - 2 + nodes) % nodes));
+    // send answer to [me - 1, me - 2]
+    put_pll((me - 1 + nodes) % nodes, {to_send1.first, to_send1.second});
+    send((me - 1 + nodes) % nodes);
+    put_pll((me - 2 + nodes) % nodes, {to_send2.first, to_send2.second});
+    send((me - 2 + nodes) % nodes);
+    // recieve answer from [me + 1, me + 2]
+    receive((me + 1) % nodes);
+    auto get1 = get_pll((me + 1) % nodes);
+    receive((me + 2) % nodes);
+    auto get2 = get_pll((me + 2) % nodes);
+    if (left == right) continue;
+    /*if (me == 0)
+    printf("node[%d], [%d %d]: mid = %d, (%lld %lld) (%lld %lld) (%lld %lld), go_left=%d\n", 
+        me, left, right, mid, 
+        my_value.first, my_value.second,
+        get1.first, get1.second,
+        get2.first, get2.second,
+        int(left_or_right(my_value, get1, get2)));*/
+    if (left_or_right(my_value, get1, get2)) right = mid;
+    else left = mid + 1;
   }
+
   if (me) {
-    put_int(0, least);
-    put_int(0, find);
-    put_int(0, flag);
+    put_int(0, left);
     send(0);
   } else {
-    for (int node = 1; node < nodes; ++node) {
-      receive(node);
-      int new_least = get_int(node);
-      int base = get_int(node);
-      flag &= get_int(flag);
-      if (find == -1) find = base;
+    printf("%d", left);
+    for (int i = 1; i < nodes; ++i) {
+      receive(i);
+      printf(" %d", get_int(i));
     }
-    for (int node = 1; node < nodes; ++node) {
-      put_int(node, find);
-      put_int(node, flag);
-      send(node);
-    }
-  }
-  if (me) {
-    receive(0);
-    find = get_int(0);
-    flag = get_int(0);
-  }
-  if (!flag) {
-    if (!me) puts("IMPOSSIBLE");
-    return 0;
-  } else if (find == -1) {
-    if (!me) puts("NON-UNIQUE");
-    return 0;
-  }
-  int c0 = 0, c1 = 1;
-  int f0 = check(find, nn, c0);
-  int f1 = check(find, nn, c1);
-  int valid = true;
-  int send = 0;
-  int carry = 0;
-  if (me) {
-    receive(me - 1);
-    carry = get_int(me - 1);
-    valid &= get_int(me - 1);
-  }
-  if (carry) send = c1, valid &= f1;
-  else send = c0, valid &= f0;
-  if (me + 1 != nodes) {
-    put_int(me + 1, send);
-    put_int(me + 1, valid);
-    ::send(me + 1);
-  }
-  if (me + 1 == nodes) {
-    if (valid) printf("%d\n", find);
-    else puts("IMPOSSIBLE");
+    puts("");
   }
   return 0;
 }
