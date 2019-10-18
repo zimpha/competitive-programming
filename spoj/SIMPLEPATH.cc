@@ -6,8 +6,9 @@ using int64 = long long;
 
 const int N = 100000 + 10, mod = 1e9 + 7;
 
-std::vector<std::pair<int, int>> edges[N];
-int size[N], dep[N], n;
+std::vector<std::pair<int, int64>> edges[N];
+int64 size[N], dep[N];
+int n;
 
 void dfs1(int u, int p = -1) {
   size[u] = 1;
@@ -24,7 +25,7 @@ int64 dfs2(int u, int64 s, int p = -1) {
   for (auto &&e: edges[u]) if (e.first != p) {
     int v = e.first;
     ret += dfs2(v, s + size[u], u);
-    ret -= dep[v] * size[v] % mod * size[v] % mod * e.second % mod;
+    ret -= (int64)dep[v] * size[v] % mod * size[v] % mod * e.second % mod;
     ret += (s + size[u]) % mod * size[v] % mod * e.second % mod;
   }
   ret %= mod; ret += mod; ret %= mod;

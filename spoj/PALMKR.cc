@@ -3,19 +3,8 @@
 #include <vector>
 #include <string>
 
-std::vector<int> manacher(char *s, int n) {
-  std::vector<int> u(n <<= 1, 0);
-  for (int i = 0, j = 0, k; i < n; i += k, j = std::max(j - k, 0)) {
-    while (i >= j && i + j + 1 < n && s[(i - j) >> 1] == s[(i + j + 1) >> 1]) ++j;
-    for (u[i] = j, k = 1; i >= k && u[i] >= k && u[i - k] != u[i] - k; ++k) {
-      u[i + k] = std::min(u[i - k], u[i] - k);
-    }
-  }
-  return u;
-}
-
-const int N = 100 + 10;
-
+const int N = 200;
+int dp[N][N];
 char s[N];
 
 int main() {
@@ -24,31 +13,46 @@ int main() {
   for (int cas = 1; cas <= T; ++cas) {
     scanf("%s", s);
     int n = strlen(s);
-    auto u = manacher(s, n);
-    std::string res = "";
-    for (int i = 0; i < n; ++i) {
-      if (u[i] == i + 1) {
-        std::string x;
-        for (int j = 0; j < n - 1 - i; ++j) {
-          x.push_back(s[n - 1 - j]);
-        }
-        x += s;
-        if (res == "" || x.size() < res.size() || (x.size() == res.size() && x < res)) {
-          res = x;
-        }
-      }
-      if (u[i + n - 1] == n - i) {
-        std::string x;
-        x += s;
-        for (int j = 0; j < i; ++j) {
-          x.push_back(s[i - 1 - j]);
-        }
-        if (res == "" || x.size() < res.size() || (x.size() == res.size() && x < res)) {
-          res = x;
-        }
+    memset(dp, -1, sizeof(dp));
+    for (int i = 1; i <= n; ++i) {
+      dp[i][i] = 1;
+      dp[i][i - 1] = 0;
+    }
+    for (int l = 2; l <= n; ++l) {
+      for (int i = 1; i + l - 1 <= n; ++i) {
+        int j = i + l - 1;
+        if (s[i - 1] == s[j - 1]) dp[i][j] = dp[i + 1][j - 1] + 2;
+        else dp[i][j] = std::min(dp[i + 1][j], dp[i][j - 1]) + 2;
       }
     }
-    printf("Case %d: %d %s\n", cas, int(res.size() - n), res.c_str());
+    std::string ret;
+    int l = 1, r = n;
+    int x = 0;
+    while (l < r) {
+      int nl, nr;
+      std::string now = "";
+      if (s[l - 1] == s[r - 1] && dp[l][r] == dp[l + 1][r - 1] + 2) {
+        ret.push_back(s[l - 1]);
+        if (now == "" || ret < now) now = ret, nl = l + 1, nr = r - 1;
+        ret.pop_back();
+      }
+      if (dp[l][r] == dp[l + 1][r] + 2) {
+        ret.push_back(s[l - 1]);
+        if (now == "" || ret < now) now = ret, nl = l + 1, nr = r;
+        ret.pop_back();
+      }
+      if (dp[l][r] == dp[l][r - 1] + 2) {
+        ret.push_back(s[r - 1]);
+        if (now == "" || ret < now) now = ret, nl = l, nr = r - 1;
+        ret.pop_back();
+      }
+      ret = now;
+      l = nl;
+      r = nr;
+    }
+    if (l == r) ret.push_back(s[l - 1]);
+    for (int i = dp[1][n] / 2 - 1; i >= 0; --i) ret.push_back(ret[i]);
+    printf("Case %d: %d %s\n", cas, dp[1][n] - n, ret.c_str());
   }
   return 0;
 }

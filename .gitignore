@@ -3,3 +3,5 @@
 input
 output
 *.exe
+.vscode
+*.dSYM
