@@ -1,4 +1,6 @@
 #include <cstdio>
+#include <cstdlib>
+#include <ctime>
 #include <algorithm>
 #include <cassert>
 #include <vector>
@@ -7,21 +9,24 @@
 using uint64 = unsigned long long;
 
 const int N = 1e5 + 10;
-const int seed = 1e9 + 9, mod = 1e9 + 7;
+const int mod = 1e9 + 7;
+
+uint64 seed[N];
 
 struct Tree {
   std::vector<std::vector<int>> edges;
   std::vector<uint64> hash;
-  std::vector<int> depth, size;
+  std::vector<int> height, size;
   std::vector<int> parent;
-  int n, root;
-  Tree(): n(0) {}
+  int n, root, depth, best_u;
+  Tree(): edges(), hash(), height(), size(), parent(), n(0), depth(-1) {}
   void init() {
+    depth = -1;
     edges.assign(n, {});
-    hash.resize(n, 0);
-    depth.resize(n, 0);
-    parent.resize(n, -1);
-    size.resize(n, 0);
+    hash.assign(n, 0);
+    height.assign(n, 0);
+    parent.assign(n, -1);
+    size.assign(n, 0);
   }
   void build(int _n) {
     this->n = _n;
@@ -45,36 +50,25 @@ struct Tree {
     }
     puts("");
   }
-  int leaf() const {
-    int ret = 0;
-    for (int i = 1; i < n; ++i) {
-      if (depth[i] > depth[ret]) ret = i;
-    }
-    return ret;
-  }
   int new_node() {
     edges.emplace_back();
     hash.emplace_back();
-    depth.emplace_back();
+    height.emplace_back();
     parent.emplace_back();
     size.emplace_back();
     return n++;
   }
-  void dfs(int u) {
-    hash[u] = 1;
-    size[u] = 1;
-    std::vector<uint64> hs;
+  void dfs(int u, int d = 0) {
+    if (d > depth) depth = d, best_u = u;
+    hash[u] = 1; size[u] = 1; height[u] = 1;
     for (auto &v: edges[u]) {
-      depth[v] = depth[u] + 1;
-      dfs(v);
-      hs.push_back(hash[v]);
+      dfs(v, d + 1);
+      height[u] = std::max(height[u], height[v] + 1);
       size[u] += size[v];
     }
-    std::sort(hs.begin(), hs.end());
-    for (auto &h: hs) {
-      hash[u] = (hash[u] * seed + h + 1) % mod;
+    for (auto &v: edges[u]) {
+      hash[u] = hash[u] * (seed[height[u]] + hash[v]) % mod;
     }
-    hash[u] %= mod;
   }
 } A, B, C;
 
@@ -98,10 +92,9 @@ int mul(const Tree &A, const Tree &B, Tree &C, int u) {
 
 bool solve(const Tree &A, const Tree &B, const Tree &C, bool reverse = false) {
   if (A.n + B.n - 1 > C.n) return false;
-  int leaf_a = A.leaf(), leaf_c = C.leaf();
-  int delta = C.depth[leaf_c] - A.depth[leaf_a];
+  int delta = C.depth - A.depth;
   if (delta < 0) return false;
-  int u = leaf_c;
+  int u = C.best_u;
   for (int i = 0; i < delta; ++i) u = C.parent[u];
   Tree X, Y, AX, BY;
   X.root = build_from_subtree(C, X, u);
@@ -129,7 +122,8 @@ bool solve(const Tree &A, const Tree &B, const Tree &C, bool reverse = false) {
   Y.root = Y.new_node();
   for (auto &e: hc) for (auto &u: e.second) {
     if (C.size[u] < ny) {
-      Y.edges[Y.root].push_back(build_from_subtree(C, Y, u));
+      auto child = build_from_subtree(C, Y, u);
+      Y.edges[Y.root].push_back(child);
     }
   }
   if (Y.n != ny) return false;
@@ -151,6 +145,8 @@ bool solve(const Tree &A, const Tree &B, const Tree &C, bool reverse = false) {
 }
 
 int main() {
+  srand(time(NULL));
+  for (int i = 0; i < N; ++i) seed[i] = rand();
   int T;
   scanf("%d", &T);
   for (int cas = 1; cas <= T; ++cas) {
