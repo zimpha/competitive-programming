@@ -37,14 +37,12 @@ void solve() {
       binom[i][j] = (binom[i - 1][j] + binom[i - 1][j - 1]) % mod;
     }
   }
+  // match[x][y] = \sum_{i=0}^{y} (x-i)! * (-1)^i * \binom{y}{i}
+  //             = match[x][y - 1] - match[x - 1][y - 1];
   for (int x = 0; x <= n; ++x) {
-    for (int y = 0; y <= x; ++y) {
-      match[x][y] = fac[x];
-      for (int z = 1; z <= y; ++z) {
-        if (z & 1) match[x][y] -= binom[y][z] * fac[x - z] % mod;
-        else match[x][y] += binom[y][z] * fac[x - z] % mod;
-      }
-      match[x][y] %= mod; match[x][y] += mod; match[x][y] %= mod;
+    match[x][0] = fac[x];
+    for (int y = 1; y <= x; ++y) {
+      match[x][y] = (match[x][y - 1] + mod - match[x - 1][y - 1]) % mod;
     }
   }
   ways[0][0] = 1;
@@ -57,6 +55,7 @@ void solve() {
     }
   }
 
+  // could be optimize to O(n^2)
   for (int x = 0; x <= n; ++x) {
     for (int y = 0; x + y <= n; ++y) {
       dp[x][y] = fac[2 * (x + y)];
