@@ -188,8 +188,47 @@ void count(int &less, int &equal, int x, int y, int l, int r) {
   }
 }
 
+struct FastIO {
+  static const int S = 655360;
+  char buf[S];
+  int pos, len;
+  bool eof;
+  FILE *in;
+  FastIO(FILE *_in = stdin) {
+    in = _in;
+    pos = len = 0;
+    eof = false;
+  }
+  inline int nextChar() {
+    if (pos == len)
+      pos = 0, len = fread(buf, 1, S, in);
+    if (pos == len) {eof = true; return -1;}
+    return buf[pos++];
+  }
+  inline int nextUInt() {
+    int c = nextChar(), x = 0;
+    while (c <= 32) c = nextChar();
+    for (;'0' <= c && c <= '9'; c = nextChar()) x = x * 10 + c - '0';
+    return x;
+  }
+  inline int nextInt() {
+    int s = 1, c = nextChar(), x = 0;
+    while (c <= 32) c = nextChar();
+    if (c == '-') s = -1, c = nextChar();
+    for (; '0' <= c && c <= '9'; c = nextChar()) x = x * 10 + c - '0';
+    return x * s;
+  }
+  inline void nextString(char *s) {
+    int c = nextChar();
+    while (c <= 32) c = nextChar();
+    for(; c > 32; c = nextChar()) *s++ = c;
+    *s = 0;
+  }
+} io;
+
 int main() {
-  scanf("%d%d", &n, &m);
+  n = io.nextUInt();
+  m = io.nextUInt();
   p1[0] = pw[0] = 1;
   for (int i = 1; i <= n; ++i) {
     p1[i] = p1[i - 1] * seed1 % mod1;
@@ -199,9 +238,9 @@ int main() {
   memset(G, -1, sizeof(*G) * n);
   ns = 0; xs[ns++] = 0;
   for (int i = 1; i < n; ++i) {
-    int u, v, w;
-    scanf("%d%d%d", &u, &v, &w);
-    --u, --v;
+    int u = io.nextUInt() - 1;
+    int v = io.nextUInt() - 1;
+    int w = io.nextUInt();;
     edges[sz] = (Edge){v, w, G[u]}; G[u] = sz++;
     edges[sz] = (Edge){u, w, G[v]}; G[v] = sz++;
     xs[ns++] = w;
@@ -252,7 +291,7 @@ int main() {
         break;
       }
     }
-    if (sum <= 100000) break;
+    if (sum <= 200000) break;
     int less = 0, equal = 0;
     for (int i = 0; i < n; ++i) if (!ivs[i].empty()) {
       count<1>(less, equal, seq[x], seq[y], ivs[i][0].first, ivs[i][0].second);
