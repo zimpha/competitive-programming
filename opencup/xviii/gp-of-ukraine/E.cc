@@ -89,8 +89,6 @@ int main() {
         }
       }
     }
-    //for (int i = 0; i <= n; ++i) printf("%lld ", dp[next][i]);
-    //puts("");
     std::swap(cur, next);
   }
   int64 ret = -1;
