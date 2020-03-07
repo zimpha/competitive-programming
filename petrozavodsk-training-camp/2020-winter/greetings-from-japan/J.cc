@@ -45,7 +45,7 @@ struct Point {
   }
   // counter clockwise rotate using cos/sin
   Point rot(flt cosa, flt sina) const {
-    return point(x * cosa - y * sina, x * sina + y * cosa);
+    return Point(x * cosa - y * sina, x * sina + y * cosa);
   }
 };
 
