@@ -6,12 +6,24 @@ int rec(std::vector<int> &A, std::vector<int> &B) {
   if (A.empty() || A.back() < B[0]) return 0;
   if (A[0] > B.back()) return A.size();
   int n = A.size();
+  std::vector<std::pair<int, int>> can;
   int best_i = -n, best_j = n;
   for (int i = 0, j = 0; i < n; ++i) {
     while (j < n && A[i] >= B[j]) ++j;
-    if (j < n && best_i - best_j < i - j) {
-      best_i = i;
-      best_j = j;
+    //if (j < n && (can.empty() || can.back().second != j)) {
+      if (j < n) can.emplace_back(i, j);
+    //}
+  }
+  for (auto &e: can) {
+    if (e.first - e.second > best_i - best_j) {
+      best_i = e.first;
+      best_j = e.second;
+    }
+  }
+  for (auto &e: can) {
+    if (e.second == best_j) {
+      best_i = e.first;
+      break;
     }
   }
   A.erase(A.begin() + best_i);
