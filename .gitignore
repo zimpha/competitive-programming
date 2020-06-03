@@ -5,3 +5,4 @@ output
 *.exe
 .vscode
 *.dSYM
+.DS_Store

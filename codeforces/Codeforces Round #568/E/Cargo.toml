@@ -1,0 +1,7 @@
+[package]
+name = "E"
+version = "0.1.0"
+authors = ["zimpha"]
+edition = "2018"
+
+[dependencies]
