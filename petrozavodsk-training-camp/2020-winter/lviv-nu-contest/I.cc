@@ -10,9 +10,7 @@ int rec(std::vector<int> &A, std::vector<int> &B) {
   int best_i = -n, best_j = n;
   for (int i = 0, j = 0; i < n; ++i) {
     while (j < n && A[i] >= B[j]) ++j;
-    //if (j < n && (can.empty() || can.back().second != j)) {
-      if (j < n) can.emplace_back(i, j);
-    //}
+    if (j < n) can.emplace_back(i, j);
   }
   for (auto &e: can) {
     if (e.first - e.second > best_i - best_j) {

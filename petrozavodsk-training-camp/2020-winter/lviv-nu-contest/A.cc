@@ -137,10 +137,6 @@ int main() {
     int s = std::find(hulls[i].begin(), hulls[i].end(), a) - hulls[i].begin();
     std::rotate(hulls[i].begin(), hulls[i].begin() + s, hulls[i].end());
   }
-  //for (auto &p: hull) printf("%lld %lld\n", p.x, p.y);
-  //puts("--");
-  //for (auto &p: rest) printf("%lld %lld\n", p.x, p.y);
-  //puts("==");
   double ret = 1e9;
   for (int i = 0, j = 1; i < n; ++i) {
     const point &a = hull[i], &b = hull[(i + 1) % n];
@@ -155,14 +151,10 @@ int main() {
       else left = mid + 1;
     }
     best = std::max(best, ab.det(extra[left] - a));
-    //printf("i=%d j=%d %.10f\n", i, j, best / ab.norm());
     ret = std::min(ret, best / ab.norm());
   }
   for (int i = 0; i < n; ++i) {
     auto &extra = hulls[i];
-    //printf("%d: ", i);
-    //for (auto &p: extra) printf("(%lld, %lld) ", p.x, p.y);
-    //puts("");
     for (size_t j = 0; j + 1 < extra.size(); ++j) {
       const point &a = extra[j], &b = extra[j + 1];
       point ab = b - a;
@@ -174,7 +166,6 @@ int main() {
         else left = mid + 1;
       }
       best = std::max(best, ab.det(hull[(i + 1 + left) % n] - a));
-      //printf("i=%d %.10f\n", (i + 1 + left) % n, best / ab.norm());
       ret = std::min(ret, best / ab.norm());
     }
   }
