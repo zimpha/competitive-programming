@@ -6,13 +6,13 @@
 #include <algorithm>
 #include <map>
 
-using int64 = long long;
+using i64 = long long;
 
-const int N = 1e6 + 10, M = N;
+const int N = 1e6 + 10;
 const int mod = 20062006;
 
-int sub[M], ways[M];
 char s[N];
+int n, m;
 
 void mul(int a[3][3], int b[3][3]) {
   int c[3][3];
@@ -20,7 +20,7 @@ void mul(int a[3][3], int b[3][3]) {
     for (int j = 0; j < 3; ++j) {
       c[i][j] = 0;
       for (int k = 0; k < 3; ++k) {
-        c[i][j] += (int64)a[i][k] * b[k][j] % mod;
+        c[i][j] += (i64)a[i][k] * b[k][j] % mod;
       }
     }
   }
@@ -45,7 +45,7 @@ std::pair<int, int> get_ways(int k) {
       for (int i = 0; i < 3; ++i) {
         t[i] = 0;
         for (int j = 0; j < 3; ++j) {
-          t[i] += (int64)r[j] * m[i][j] % mod;
+          t[i] += (i64)r[j] * m[i][j] % mod;
         }
       }
       for (int i = 0; i < 3; ++i) r[i] = t[i] % mod;
@@ -55,106 +55,145 @@ std::pair<int, int> get_ways(int k) {
   return {r[0], r[1]};
 }
 
-int main() {
-  std::vector<int> fib = {1, 1};
-  for (int i = 2; i <= 41; ++i) {
+void solve_small() {
+  std::vector<std::string> fib = {"b", "a"};
+  for (int i = 2; i <= n; ++i) {
     fib.push_back(fib[i - 1] + fib[i - 2]);
   }
-  int m, n;
-  scanf("%d", &m);//, s);
-  std::string xx = "b", yy = "a";
-  for (int i = 2; i <= m; ++i) {
-    auto z = yy + xx;
-    xx = yy;
-    yy = z;
-  }
-  std::map<std::string, int> sss;
-  for (size_t ii = 0; ii < yy.size(); ++ii) {
-    for (size_t jj = ii; jj < yy.size(); ++jj) {
-      sss[yy.substr(ii, jj - ii + 1)]++;
+  std::map<std::string, int> cnt;
+  for (size_t i = 0; i < fib[n].size(); ++i) {
+    for (size_t j = i; j < fib[n].size(); ++j) {
+      cnt[fib[n].substr(i, j - i + 1)] += 1;
     }
   }
-  for (size_t ii = 0; ii < yy.size(); ++ii) {
-    for (size_t jj = ii; jj < yy.size(); ++jj) {
-      for (int k = ii; k <= jj; ++k) s[k - ii] = yy[k];
-      s[jj - ii + 1] = 0;
-      //if (!(ii == 0 && jj == 3)) continue;
-      //printf("%s\n", s);
-      n = strlen(s);
-      if (m <= 1) {
-        puts("1 1");
-        return 0;
-      }
-      int x = 1;
-      while (x < m && fib[x] < n * 10) ++x;
-      if (x % 2 != m % 2) ++x;
-      assert(x <= m);
-      std::string t_fs = "b", fs = "a";
-      for (int i = 2; i <= x; ++i) {
-        std::string z = fs + t_fs;
-        t_fs = fs; fs = z;
-      }
-      std::vector<int> acc;
-      for (int i = x; i >= 1; i -= 2) acc.push_back(fib[i]);
-      std::reverse(acc.begin(), acc.end());
-      std::vector<std::pair<int, int>> go;
-      std::vector<std::pair<int, int>> from;
-      for (int i = 2; i < 41 && i + 1 <= m; ++i) {
-        go.emplace_back(fib[i] - 2, fib[i + 1] - 1);
-        from.emplace_back(fib[i + 1] - 1, fib[i] - 2);
-      }
-      sub[0] = 1;
-      for (int i = 1, j = 0; i <= fib[x]; ++i) {
-        sub[i] = sub[i - 1];
-        while (j < from.size() && from[j].first < i) ++j;
-        if (j < from.size() && from[j].first == i) sub[i] += sub[from[j].second];
-        if (sub[i] >= mod) sub[i] -= mod;
-      }
-      auto accepted = get_ways((m - x) / 2);
-      ways[fib[x]] = accepted.first;
-      for (int i = fib[x] - 1, j = go.size() - 1, k = acc.size() - 1; i >= 0; --i) {
-        ways[i] = ways[i + 1];
-        while (k >= 0 && acc[k] > i) --k;
-        if (k >= 0 && acc[k] == i) ways[i]++;
-        while (j >= 0 && go[j].first > i) --j;
-        if (j >= 0 && go[j].first == i) {
-          if (go[j].second < fib[x]) ways[i] += ways[go[j].second];
-          else ways[i] += accepted.second;
-        }
-        ways[i] %= mod;
-      }
+  int occ = cnt[s], ret = 0;
+  for (auto &e: cnt) {
+    ret += e.second >= occ;
+  }
+  printf("%d %d\n", occ, ret);
+}
 
-      int p = 0;
-      for (int i = 0, j = 0; i < n; ++i) {
-        if (fs[p] == s[i]) ++p;
-        else {
-          while (go[j].first < p) ++j;
-          p = go[j].second;
-        }
-        assert(p <= fs.size());
+struct Node {
+  int go[2];
+  int len[2];
+  i64 ways, occ;
+  bool acc;
+} nodes[300];
+
+// build csam for fib[n]
+int build(int n) {
+  std::vector<int> fib = {1, 1};
+  for (int i = 2; i <= n; ++i) {
+    fib.push_back(fib[i - 1] + fib[i - 2]);
+  }
+  int parity = n % 2;
+  for (int i = 0; i < 300; ++i) {
+    nodes[i].go[0] = nodes[i].go[1] = -1;
+    nodes[i].len[0] = nodes[i].len[1] = 0;
+    nodes[i].ways = nodes[i].occ = 0;
+    nodes[i].acc = false;
+  }
+  int m = 0;
+  for (; n >= 5; --n) {
+    if (n % 2 == parity) {
+      nodes[m].acc = true;
+    }
+    if (m) {
+      nodes[m].go[0] = m - 1;
+      nodes[m].len[0] = fib[n - 1] - 2;
+    }
+    if (n & 1) { // end with ba
+      if (m) {
+        nodes[m + 2].go[0] = m - 2;
+        nodes[m + 2].len[0] = 1;
       }
-      //for (int i = 0; i <= fib[x]; ++i) printf("%d ", ways[i]);
-      //puts("");
-      //for (int i = 0; i <= fib[x]; ++i) printf("%d ", sub[i]);
-      //puts("");
-      int q = p;
-      for (auto &x: acc) if (x >= p) {
-        q = x;
-        break;
+      nodes[m + 2].go[1] = m + 1;
+      nodes[m + 1].go[0] = m;
+      nodes[m + 2].len[1] = nodes[m + 1].len[0] = 1;
+    } else { // end with ab
+      if (m) {
+        nodes[m + 2].go[1] = m - 2;
+        nodes[m + 2].len[1] = 1;
       }
-      for (auto &e: go) if (e.first >= p) {
-        q = std::min(q, e.first);
-        break;
+      nodes[m + 2].go[0] = m + 1;
+      nodes[m + 1].go[1] = m;
+      nodes[m + 2].len[0] = nodes[m + 1].len[1] = 1;
+    }
+    m += 3;
+  }
+  if (parity == 0) {
+    nodes[m].acc = nodes[m + 3].acc = 1;
+  } else {
+    nodes[m + 2].acc = nodes[m + 4].acc = 1;
+  }
+  nodes[m + 5].go[1] = m + 3;
+  nodes[m + 5].len[1] = 1;
+  nodes[m + 2].go[1] = m - 2;
+  nodes[m + 2].len[1] = 1;
+  nodes[m + 4].go[0] = m + 1;
+  nodes[m + 4].len[0] = 1;
+  static std::string s = "abaaba";
+  for (int i = 0; i <= 5; ++i) {
+    int e = s[5 - i] - 'a';
+    nodes[m + i].go[e] = m + i - 1;
+    nodes[m + i].len[e] = 1;
+  }
+  return m + 5;
+}
+
+void solve_large() {
+  int w = std::min(n, 40);
+  if (n % 2 != w % 2) ++w;
+
+  int start = build(w);
+  auto rest = get_ways((n - w) / 2);
+  nodes[0].ways = nodes[1].ways = nodes[2].ways = rest.first;
+  if (n != w) {
+    nodes[2].ways = (nodes[2].ways + rest.second) % mod;
+  }
+  for (int i = 3; i <= start; ++i) {
+    nodes[i].ways = nodes[i].acc;
+    for (int e = 0; e < 2; ++e) {
+      if (nodes[i].go[e] != -1) {
+        nodes[i].ways += nodes[nodes[i].go[e]].ways;
       }
-      int64 ret = 0;
-      for (int i = 1; i <= q; ++i) ret += sub[i];
-      //printf("%d %lld\n", ways[p], ret % mod);
-      assert(ways[p] == sss[s]);
-      int cnt = 0;
-      for (auto &e: sss) cnt += e.second >= ways[p];
-      assert(ret == cnt);
+    }
+    nodes[i].ways %= mod;
+  }
+  nodes[start].occ = 1;
+  for (int i = start; i >= 0; --i) {
+    nodes[start].occ %= mod;
+    for (int e = 0; e < 2; ++e) {
+      if (nodes[i].go[e] == -1) continue;
+      nodes[nodes[i].go[e]].occ += nodes[i].occ;
     }
   }
-  //for (auto &x: sss) printf("%s %d\n", x.first.c_str(), x.second);
+
+  int m = strlen(s), p = start;
+  for (int i = 0; i < m; ) {
+    int o = s[i] - 'a';
+    i += nodes[p].len[o];
+    p = nodes[p].go[o];
+  }
+  int q = p;
+  for (; q > 0; --q) {
+    if (nodes[q].acc) break;
+    if (nodes[q].go[0] != -1 && nodes[q].go[1] != -1) break;
+  }
+  i64 ret = 0;
+  for (int i = start; i >= q; --i) {
+    if (i != start) ret += nodes[i].occ;
+    for (int e = 0; e < 2; ++e) {
+      if (nodes[i].go[e] < q) continue;
+      ret += nodes[i].occ * (nodes[i].len[e] - 1) % mod;
+    }
+  }
+  printf("%lld %lld\n", nodes[p].ways, ret % mod);
+}
+
+int main() {
+  scanf("%d%s", &n, s);
+  if (n <= 6) solve_small();
+  else solve_large();
   return 0;
 }
